@@ -20,9 +20,9 @@ We are using customer feedback from the Amazon dataset, available [here](https:/
 
 ## Applying SPF
 
-To apply SPF see [tbip.py](https://github.com/keyonvafa/tbip/blob/master/tbip.py) to produce ideal points.
+To apply SPF see [the example notebook](https://github.com/BPro2410/Seeded-Poisson-Factorization/blob/main/SPF_example_notebook.ipynb) for a minimal example.
 
 
 ## Reproducing Paper Results
 
-To reproduce our paper results please see [reproduction section](https://github.com/keyonvafa/tbip/blob/master/tbip.py) and run the respective files.
+To reproduce our paper results please see [reproduction section](https://github.com/BPro2410/Seeded-Poisson-Factorization/tree/main/analysis/reproduction) and run the respective files.
