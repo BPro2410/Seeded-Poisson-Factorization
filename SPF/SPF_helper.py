@@ -38,10 +38,16 @@ class SPF_helper:
         """
 
         prior_names = ["theta_shape", "theta_rate", "beta_shape", "beta_rate", "beta_tilde_shape", "beta_tilde_rate"]
+
+        if not isinstance(priors, dict):
+            raise TypeError(f"Prior parameter should be passed as a dictionary with prior parameter names "
+                            f"possible: {priors}")
+
         # Check prior specification
         for prior, value in priors.items():
             if prior not in prior_names:
-                raise ValueError("Please specify correct prior! Otherwise use standard specification!")
+                raise ValueError(f"Please specify correct prior parameters! Otherwise use standard specification! "
+                                 f"Prior parameter possible: {priors}")
             if type(value) != float:
                 raise ValueError("Prior values must be floating values!")
 
