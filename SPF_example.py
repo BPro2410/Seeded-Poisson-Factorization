@@ -35,8 +35,8 @@ spf1.read_docs(df1["Text"])
 # spf1.__dict__
 
 # Train the model
-# spf1.model_train(lr = 0.1, epochs = 150, tensorboard = False)
-spf1.model_train(lr = 0.1, epochs = 150, tensorboard = True, log_dir = "C:/Users/Bernd/Downloads/test")
+spf1.model_train(lr = 0.1, epochs = 150, tensorboard = False)
+# spf1.model_train(lr = 0.1, epochs = 150, tensorboard = True, log_dir = "C:/Users/Bernd/Downloads/test")
 # access via cmd: tensorboard --logdir=C:/Users/Bernd/Downloads/test
 
 # See model results

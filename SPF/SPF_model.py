@@ -330,6 +330,7 @@ class SPF(tf.keras.Model):
             print(f"\r|{bar}| {percent:.2f}% [{epoch_runtime:.4f}/s per epoch]", end="\r")
 
         @tf.function
+        @tf.autograph.experimental.do_not_convert
         def train_step(inputs, outputs, optim):
             """
             Train step using Tensorflows gradient tape.
