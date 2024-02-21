@@ -20,33 +20,39 @@ tfb = tfp.bijectors
 Root = tfp.distributions.JointDistributionCoroutine.Root
 
 
-
 class SPF(tf.keras.Model):
     """
-    Tensorflow implementation of Variational Seeded Topic Model.
+    Tensorflow implementation of the Seeded Poisson Factorization topic model.
     """
 
     def __init__(self, keywords: dict,
                  residual_topics: int = 0):
         """
+        Initialization of the SPF object.
 
         :param keywords: Dictionary containing topics (keys) and keywords (values) of the form
         {'topic_1':['word1', 'word2'],'topic_2':['word1', 'word2']}
-        :param residual_topoics: Number of residual topics (i.e. topics with no prior information available)
+        :param residual_topics: Number of residual topics (i.e. topics with no prior information available)
         """
 
         super(SPF, self).__init__()
         # Initialize model parameters
-        # self.keywords = SPF_helper._check_keywords(keywords)
-        self.keywords = keywords
+        self.__keywords = SPF_helper._check_keywords(keywords)
+        # self.__keywords = keywords
         self.residual_topics = residual_topics
-        self.model_settings = {"num_topics" : len(self.keywords.keys()) + residual_topics}
-        # self.num_topics = len(self.keywords)
+        self.model_settings = {"num_topics": len(self.__keywords.keys()) + residual_topics}
 
+    @property
+    def keywords(self):
+        return self.__keywords
+
+    @keywords.setter
+    def keywords(self, new_keywords):
+        raise Exception("Please reinitialize the model with new keywords. No overwriting allowed!")
 
     def read_docs(self,
                   text: list[str],
-                  count_vectorizer = CountVectorizer(stop_words = "english", min_df = 2),
+                  count_vectorizer=CountVectorizer(stop_words="english", min_df=2),
                   batch_size: int = 1024,
                   seed: int = 2410):
         """
@@ -64,13 +70,10 @@ class SPF(tf.keras.Model):
         cv.fit(text)
 
         # Create DTM
-        counts = sparse.csr_matrix(cv.transform(text), dtype = np.float32)
+        counts = sparse.csr_matrix(cv.transform(text), dtype=np.float32)
 
         # check if there are documents with 0 tokens
-        # doc_lengths = tf.reduce_sum(counts.toarray(), axis = 1)
-        # if tf.sort(doc_lengths)[0] < 1:
-        #     raise ValueError("Please review documents or provide a custom tokenizer. There are documents with 0 tokens.")
-        zero_idx = np.where(np.sum(counts, axis = 1) == 0)
+        zero_idx = np.where(np.sum(counts, axis=1) == 0)
         if len(zero_idx[0]) > 0:
             raise ValueError(f"There are documents with zero words after tokenization. "
                              f"Please remove them or provide a custom tokenizer. Documents: {zero_idx[0]}")
@@ -81,16 +84,15 @@ class SPF(tf.keras.Model):
         self.model_settings["num_documents"] = counts.shape[0]
         doc_lengths = tf.reduce_sum(counts.toarray(), axis=1)
         self.model_settings["doc_length_K"] = tf.concat([doc_lengths[:, tf.newaxis]] *
-                                                        self.model_settings["num_topics"], axis = 1)
-
+                                                        self.model_settings["num_topics"], axis=1)
 
         # Check if seed words are contained in vocabulary & create keyword indices tensor for beta-tilde
         self.kw_indices_topics = list()
         not_in_vocab_words = list()
 
-        for idx, topic in enumerate(self.keywords.keys()):
+        for idx, topic in enumerate(self.__keywords.keys()):
             # idx indicates the topic index -> used for beta-tilde adjustments
-            for keyword in self.keywords[topic]:
+            for keyword in self.__keywords[topic]:
                 try:
                     kw_index = list(self.model_settings["vocab"]).index(keyword)
                     self.kw_indices_topics.append([idx, kw_index])
@@ -100,10 +102,10 @@ class SPF(tf.keras.Model):
                     not_in_vocab_words.append(keyword)
 
         # Remove keywords which are not in vocab!
-        for topic in self.keywords.keys():
+        for topic in self.__keywords.keys():
             for na_word in not_in_vocab_words:
                 try:
-                    self.keywords[topic].remove(na_word)
+                    self.__keywords[topic].remove(na_word)
                 except:
                     pass
 
@@ -151,13 +153,12 @@ class SPF(tf.keras.Model):
             dims=[self.model_settings["num_topics"], self.model_settings["num_words"]],
             value=self.prior_params["beta_rate"])
 
-
         # Beta_tilde prior parameter - seed words
-        self.num_kw = len([kw for kws in self.keywords.values() for kw in kws])
-        self.prior_parameter["a_beta_tilde"] = tf.fill(dims = [self.num_kw], value = self.prior_params["beta_tilde_shape"])
-        self.prior_parameter["b_beta_tilde"] = tf.fill(dims = [self.num_kw], value = self.prior_params["beta_tilde_rate"])
+        self.num_kw = len([kw for kws in self.__keywords.values() for kw in kws])
+        self.prior_parameter["a_beta_tilde"] = tf.fill(dims=[self.num_kw], value=self.prior_params["beta_tilde_shape"])
+        self.prior_parameter["b_beta_tilde"] = tf.fill(dims=[self.num_kw], value=self.prior_params["beta_tilde_rate"])
 
-        # --- Create free variational family parameters ---
+        # --- Create free variational family parameter ---
         self.variational_parameter = dict()
 
         # theta - document distribution
@@ -220,7 +221,6 @@ class SPF(tf.keras.Model):
 
         return variational_family
 
-
     def __create_prior_batched(self, document_indices):
 
         """
@@ -234,7 +234,7 @@ class SPF(tf.keras.Model):
                              a_beta_tilde, b_beta_tilde,
                              kw_indices, document_indices, doc_lengths):
             """
-            keyATM as GaP model!
+            Generative model of the SPF!
             """
 
             # Theta over documents
@@ -263,7 +263,6 @@ class SPF(tf.keras.Model):
 
         return model_joint
 
-
     def __model_joint_log_prob(self, theta, beta, beta_tilde, document_indices, counts):
         """
         Prior loss function.
@@ -277,12 +276,10 @@ class SPF(tf.keras.Model):
         model_joint = self.__create_prior_batched(document_indices)
         return model_joint.log_prob_parts([theta, beta, beta_tilde, counts])
 
-
-
     def model_train(self, lr: float = 0.1,
                     epochs: int = 500,
                     lr_scheduler: str = "dynamic",
-                    lr_scheduler_params = {"check_each": 150, "check_last":50, "threshold":0.001},
+                    lr_scheduler_params={"check_each": 150, "check_last": 50, "threshold": 0.001},
                     tensorboard: bool = False,
                     log_dir: str = os.getcwd(),
                     save_every: int = 1,
@@ -306,7 +303,7 @@ class SPF(tf.keras.Model):
         self.prior_params = SPF_helper._check_priors(priors)
         self.variational_params = SPF_helper._check_variational_parameter(
             variational_parameter,
-            corpus_info = self.model_settings["num_documents"])
+            corpus_info=self.model_settings["num_documents"])
 
         # Create all the required model parameters in matching dimensions
         self.__create_model_parameter()
@@ -315,7 +312,7 @@ class SPF(tf.keras.Model):
         self.variational_family = self.__create_variational_family()
 
         # Initialize model parameters and storage matrices
-        optim = tf.optimizers.Adam(learning_rate = lr)
+        optim = tf.optimizers.Adam(learning_rate=lr)
         neg_elbos = list()
         entropys = list()
         log_priors = list()
@@ -356,7 +353,7 @@ class SPF(tf.keras.Model):
                 # Rescale reconstruction loss since it is only based on a mini-batch
                 recon_scaled = reconstruction_loss * tf.dtypes.cast(
                     tf.constant(self.model_settings["num_documents"]) / (tf.shape(outputs)[0]),
-                                                                    tf.float32)
+                    tf.float32)
                 log_prior = tf.reduce_sum(
                     [log_prior_loss_theta, log_prior_loss_beta, log_prior_loss_beta_tilde, recon_scaled])
 
@@ -376,7 +373,6 @@ class SPF(tf.keras.Model):
             summary_writer = tf.summary.create_file_writer(log_dir)
             summary_writer.set_as_default()
 
-
         # Start model training
         progress_bar(0, epochs)
         self.lrs = [lr]
@@ -392,12 +388,12 @@ class SPF(tf.keras.Model):
 
             # Check if lr should be changed
             if (lr_scheduler == "dynamic") and (epoch % lr_scheduler_params["check_each"] == 0):
-                optim.lr.assign(SPF_lr_schedules.dynamic_schedule(epoch = epoch,
-                                                                  optim = optim,
-                                                                  losses = neg_elbos,
+                optim.lr.assign(SPF_lr_schedules.dynamic_schedule(epoch=epoch,
+                                                                  optim=optim,
+                                                                  losses=neg_elbos,
                                                                   check_each=lr_scheduler_params["check_each"],
                                                                   check_last=lr_scheduler_params["check_last"],
-                                                                  threshold = lr_scheduler_params["threshold"]))
+                                                                  threshold=lr_scheduler_params["threshold"]))
             self.lrs.append(optim.lr.numpy())
 
             # Iterate through batches
@@ -424,13 +420,13 @@ class SPF(tf.keras.Model):
             recon_losses.append(np.mean(epoch_reconstruction_loss))
 
             if tensorboard == True and epoch % save_every == 0:
-                tf.summary.text("topics", self.print_topics(), step = epoch)
-                tf.summary.scalar("elbo/Negative ELBO", neg_elbos[-1], step = epoch)
-                tf.summary.scalar("elbo/Entropy loss", entropys[-1], step = epoch)
+                tf.summary.text("topics", self.print_topics(), step=epoch)
+                tf.summary.scalar("elbo/Negative ELBO", neg_elbos[-1], step=epoch)
+                tf.summary.scalar("elbo/Entropy loss", entropys[-1], step=epoch)
                 tf.summary.scalar("elbo/Log prior loss", log_priors[-1], step=epoch)
                 tf.summary.scalar("elbo/Reconstruction loss", recon_losses[-1], step=epoch)
                 tf.summary.histogram("params/Theta shape surrogate",
-                                     self.variational_parameter["a_theta_S"], step = epoch)
+                                     self.variational_parameter["a_theta_S"], step=epoch)
                 tf.summary.histogram("params/Theta rate surrogate",
                                      self.variational_parameter["b_theta_S"], step=epoch)
                 tf.summary.histogram("params/Beta shape surrogate",
@@ -482,11 +478,11 @@ class SPF(tf.keras.Model):
         if neg_elbo == True:
             fig, ax1 = plt.subplots(figsize=(12, 7))
             plt.title(f"SPF loss plot on {self.model_settings['num_documents']} documents",
-                      fontsize = 15, weight = "bold", color = "0.2")
-            ax1.set_xlabel("Epoch", fontsize = 13, color = "0.2")
-            ax1.set_ylabel("Negative ELBO loss", fontsize = 15, color = "0.2")
-            lns1 = ax1.plot(self.model_loss["negative_elbo"], color = "black", label = "Negative ELBO", lw = 2.5, mec = "w",
-                     mew = "2", alpha = 0.9)
+                      fontsize=15, weight="bold", color="0.2")
+            ax1.set_xlabel("Epoch", fontsize=13, color="0.2")
+            ax1.set_ylabel("Negative ELBO loss", fontsize=15, color="0.2")
+            lns1 = ax1.plot(self.model_loss["negative_elbo"], color="black", label="Negative ELBO", lw=2.5, mec="w",
+                            mew="2", alpha=0.9)
             lines = lns1
             labs = [l.get_label() for l in lines]
             ax1.legend(lines, labs, loc=1, frameon=False, labelcolor="0.2",
@@ -497,8 +493,6 @@ class SPF(tf.keras.Model):
             ax1.tick_params(width=2.5, labelsize=13)
             fig.tight_layout()
             plt.show()
-
-
 
         if detail_plot == True:
             show_since = 0
@@ -538,7 +532,6 @@ class SPF(tf.keras.Model):
         #     plt.grid(True, alpha=0.3)
         #     plt.show()
 
-
     def calculate_topic_word_distributions(self):
         """
         Calculate posterior means for the topic-word distribution.
@@ -549,9 +542,13 @@ class SPF(tf.keras.Model):
         beta_star = tf.tensor_scatter_nd_add(E_beta, self.kw_indices_topics, E_beta_tilde)
         topic_names = list(self.keywords.keys())
         rs_names = [f"residual_topic_{i}" for i in range(self.residual_topics)]
-        return pd.DataFrame(tf.transpose(beta_star), index=self.model_settings["vocab"], columns=topic_names+rs_names)
+        return pd.DataFrame(tf.transpose(beta_star), index=self.model_settings["vocab"], columns=topic_names + rs_names)
 
-    def print_topics(self):
+    def print_topics(self, num_words: int = 50):
+        """
+        Prints the words with the highest mean intensity per topic.
+        :param num_words: Number of words printed per topic.
+        """
         E_beta = self.variational_parameter["a_beta_S"] / self.variational_parameter["b_beta_S"]
         E_beta_tilde = self.variational_parameter["a_beta_tilde_S"] / self.variational_parameter["b_beta_tilde_S"]
         beta_star = tf.tensor_scatter_nd_add(E_beta, self.kw_indices_topics, E_beta_tilde)
@@ -559,7 +556,7 @@ class SPF(tf.keras.Model):
         topic_strings = list()
         for topic_idx in range(self.model_settings["num_topics"]):
             neutral_start_string = "{}:".format(list(self.keywords.keys())[topic_idx])
-            words_per_topic = 50
+            words_per_topic = num_words
             neutral_row = [self.model_settings["vocab"][word] for word in top_words[topic_idx, :words_per_topic]]
             neutral_row_string = ", ".join(neutral_row)
             neutral_string = " ".join([neutral_start_string, neutral_row_string])
@@ -572,4 +569,3 @@ class SPF(tf.keras.Model):
     def __repr__(self):
         return f"Seeded Poisson Factorization (SPF) model initialized with {len(self.keywords.keys())} keyword " \
                f"topics and {self.residual_topics} residual topics."
-

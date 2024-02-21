@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class SPF_helper:
 
     def __init__(self):
@@ -19,16 +20,15 @@ class SPF_helper:
         # Check length of keywords
         if len(keywords) == 0:
             raise ValueError("Please provide keywords dictionary with topics, e.g. {'topic_1':['word1', 'word2'], "
-                            "'topic_2':['word1', 'word2']}")
+                             "'topic_2':['word1', 'word2']}")
 
         # Check format
-        for topic, keywords in keywords.items():
-            for keyword in keywords:
+        for topic, kws in keywords.items():
+            for keyword in kws:
                 if not isinstance(keyword, str):
                     raise TypeError(f"Keyword: {keyword} in topic {topic} should be a string.")
 
         return keywords
-
 
     @staticmethod
     def _check_priors(priors):
@@ -69,7 +69,7 @@ class SPF_helper:
         """
 
         vp_names = ["theta_shape_S", "theta_rate_S", "beta_shape_S", "beta_rate_S",
-                       "beta_tilde_shape_S", "beta_tilde_rate_S"]
+                    "beta_tilde_shape_S", "beta_tilde_rate_S"]
 
         if not isinstance(variational_parameter, dict):
             raise TypeError(f"Variational parameter should be passed as a dictionary with variational parameter"
@@ -85,9 +85,9 @@ class SPF_helper:
 
         # Check if all prior are specified
         variational_parameter["theta_shape_S"] = variational_parameter.get("theta_shape_S", 1.0)
-        variational_parameter["theta_rate_S"] = variational_parameter.get("theta_rate_S", corpus_info/1000)
+        variational_parameter["theta_rate_S"] = variational_parameter.get("theta_rate_S", corpus_info / 1000)
         variational_parameter["beta_shape_S"] = variational_parameter.get("beta_shape_S", 1.0)
-        variational_parameter["beta_rate_S"] = variational_parameter.get("beta_rate_S", corpus_info/1000*2)
+        variational_parameter["beta_rate_S"] = variational_parameter.get("beta_rate_S", corpus_info / 1000 * 2)
         variational_parameter["beta_tilde_shape_S"] = variational_parameter.get("beta_tilde_shape_S", 2.0)
         variational_parameter["beta_tilde_rate_S"] = variational_parameter.get("beta_tilde_rate_S", 1.0)
 
@@ -99,7 +99,7 @@ class SPF_lr_schedules:
         pass
 
     @staticmethod
-    def power_scheduling(epoch, steps = 200, initial_lr = 0.1, power = 1):
+    def power_scheduling(epoch, steps=200, initial_lr=0.1, power=1):
         """
         Learning rate as a function of the iteration number t: eta(t) = eta_0 / (1+t/s)^c.
         The steps s, power c and initial learning rate eta_0 are hyperparameters.
@@ -111,8 +111,7 @@ class SPF_lr_schedules:
         :return: New learning rate.
         """
 
-        return initial_lr/(1+epoch/steps)**1
-
+        return initial_lr / (1 + epoch / steps) ** 1
 
     @staticmethod
     def piecewise_constant_scheduling(epoch,
@@ -132,7 +131,6 @@ class SPF_lr_schedules:
             return new_lrs[1]
         elif epoch == epoch_intervall[2]:
             return new_lrs[2]
-
 
     @staticmethod
     def dynamic_schedule(epoch: int,
@@ -158,11 +156,11 @@ class SPF_lr_schedules:
             # Get last losses
             last_losses = losses[-check_last:]
             # Compute pct change
-            loss_pct_change = np.abs(np.diff(last_losses)/last_losses[:-1])
+            loss_pct_change = np.abs(np.diff(last_losses) / last_losses[:-1])
             mean_loss_pct_change = np.mean(loss_pct_change)
 
             # Half learning rate
             if epoch > check_each:
                 if mean_loss_pct_change < threshold:
-                    return optim.lr.numpy()/2
+                    return optim.lr.numpy() / 2
             return optim.lr.numpy()
