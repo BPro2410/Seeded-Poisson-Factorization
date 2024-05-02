@@ -7,7 +7,7 @@ class SPF_helper:
         pass
 
     @staticmethod
-    def _check_keywords(keywords):
+    def _check_keywords(keywords, residual_topics = 0):
         """
         Helper function that checks if the keywords passed are correctly.
         """
@@ -19,8 +19,11 @@ class SPF_helper:
 
         # Check length of keywords
         if len(keywords) == 0:
-            raise ValueError("Please provide keywords dictionary with topics, e.g. {'topic_1':['word1', 'word2'], "
-                             "'topic_2':['word1', 'word2']}")
+            # raise ValueError("Please provide keywords dictionary with topics, e.g. {'topic_1':['word1', 'word2'], "
+            #                  "'topic_2':['word1', 'word2']}")
+            if residual_topics <= 0:
+                raise ValueError("If no keywords are provided, the number of residual topics have to be specified.")
+            print(f"No keywords provided. A standard topic model with {residual_topics} residual topics will be fitted.")
 
         # Check format
         for topic, kws in keywords.items():

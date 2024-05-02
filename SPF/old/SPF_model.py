@@ -36,9 +36,9 @@ class SPF(tf.keras.Model):
         """
 
         super(SPF, self).__init__()
-
         # Initialize model parameters
-        self.__keywords = SPF_helper._check_keywords(keywords, residual_topics)
+        self.__keywords = SPF_helper._check_keywords(keywords)
+        # self.__keywords = keywords
         self.residual_topics = residual_topics
         self.model_settings = {"num_topics": len(self.__keywords.keys()) + residual_topics}
 
@@ -208,21 +208,21 @@ class SPF(tf.keras.Model):
         """
 
         @tfd.JointDistributionCoroutineAutoBatched
-        def variational_family(keywords=self.keywords):
+        def variational_family():
             theta_surrogate = yield tfd.Gamma(
                 self.variational_parameter["a_theta_S"], self.variational_parameter["b_theta_S"],
                 name="theta_surrogate")
             beta_surrogate = yield tfd.Gamma(
                 self.variational_parameter["a_beta_S"], self.variational_parameter["b_beta_S"],
                 name="beta_surrogate")
-            if len(keywords) != 0:
-                beta_tilde = yield tfd.Gamma(
-                    self.variational_parameter["a_beta_tilde_S"], self.variational_parameter["b_beta_tilde_S"],
-                    name="beta_tilde_surrogate")
+            beta_tilde = yield tfd.Gamma(
+                self.variational_parameter["a_beta_tilde_S"], self.variational_parameter["b_beta_tilde_S"],
+                name="beta_tilde_surrogate")
 
         return variational_family
 
     def __create_prior_batched(self, document_indices):
+
         """
         Definition of the data generating model.
 
@@ -232,7 +232,7 @@ class SPF(tf.keras.Model):
 
         def generative_model(a_theta, b_theta, a_beta, b_beta,
                              a_beta_tilde, b_beta_tilde,
-                             kw_indices, document_indices, doc_lengths, keywords):
+                             kw_indices, document_indices, doc_lengths):
             """
             Generative model of the SPF!
             """
@@ -242,36 +242,23 @@ class SPF(tf.keras.Model):
 
             # Beta over Topics
             beta = yield tfd.Gamma(a_beta, b_beta, name="topic_word_distribution")
+            beta_tilde = yield tfd.Gamma(a_beta_tilde, b_beta_tilde, name="adjusted_topic_word_distribution")
+            beta_star = tf.tensor_scatter_nd_add(beta, kw_indices, beta_tilde)
 
             # Scale theta by document length (according to GaP paper)
             theta_batch = tf.gather(theta, document_indices)
             relevant_doc_lengths = tf.gather(doc_lengths, document_indices)
+            theta_bar = theta_batch / relevant_doc_lengths
 
-            # Compute Poisson rate
-            if len(keywords) != 0:
-                beta_tilde = yield tfd.Gamma(a_beta_tilde, b_beta_tilde, name="adjusted_topic_word_distribution")
-                y = yield tfd.Poisson(
-                    rate=tf.matmul(
-                        theta_batch / relevant_doc_lengths,  # theta_bar
-                        tf.tensor_scatter_nd_add(beta, kw_indices, beta_tilde)  # beta_star
-                    ),
-                    name="word_count"
-                )
-            else:
-                y = yield tfd.Poisson(
-                    rate=tf.matmul(
-                        theta_batch / relevant_doc_lengths,
-                        beta
-                    ),
-                    name="word_count"
-                )
+            # Word counts
+            rate = tf.matmul(theta_bar, beta_star)
+            y = yield tfd.Poisson(rate=rate, name="word_count")
 
         model_joint = tfp.distributions.JointDistributionCoroutineAutoBatched(
             lambda: generative_model(self.prior_parameter["a_theta"], self.prior_parameter["b_theta"],
                                      self.prior_parameter["a_beta"], self.prior_parameter["b_beta"],
                                      self.prior_parameter["a_beta_tilde"], self.prior_parameter["b_beta_tilde"],
-                                     self.kw_indices_topics, document_indices, self.model_settings["doc_length_K"],
-                                     self.keywords)
+                                     self.kw_indices_topics, document_indices, self.model_settings["doc_length_K"])
         )
 
         return model_joint
@@ -279,24 +266,20 @@ class SPF(tf.keras.Model):
     def __model_joint_log_prob(self, theta, beta, beta_tilde, document_indices, counts):
         """
         Prior loss function.
-        :param theta: q(\theta) sample.
-        :param beta: q(\beta) sample.
-        :param beta_tilde: q(\beta_tilde) sample.
+        :param theta: Theta surrogate sample.
+        :param beta: Beta surrogate sample.
+        :param beta_tilde: Beta tilde surrogate sample.
         :param document_indices: Document indices relevant for batches
         :param counts: DTM counts (batched).
         :return: Model prior loss.
         """
-        if len(self.keywords) != 0:
-            model_joint = self.__create_prior_batched(document_indices)
-            return model_joint.log_prob_parts([theta, beta, beta_tilde, counts])
-        else:
-            model_joint = self.__create_prior_batched(document_indices)
-            return model_joint.log_prob_parts([theta, beta, counts])
+        model_joint = self.__create_prior_batched(document_indices)
+        return model_joint.log_prob_parts([theta, beta, beta_tilde, counts])
 
     def model_train(self, lr: float = 0.1,
                     epochs: int = 500,
                     lr_scheduler: str = "dynamic",
-                    lr_scheduler_params= {"check_each": 150, "check_last": 50, "threshold": 0.001},
+                    lr_scheduler_params={"check_each": 150, "check_last": 50, "threshold": 0.001},
                     tensorboard: bool = False,
                     log_dir: str = os.getcwd(),
                     save_every: int = 1,
@@ -357,44 +340,25 @@ class SPF(tf.keras.Model):
             document_indices = inputs["document_indices"]
 
             with tf.GradientTape() as tape:
+                # Sample from the variational family
+                theta, beta, beta_tilde = self.variational_family.sample()
 
-                if len(self.keywords) != 0:
-                    # Sample from the variational family
-                    theta, beta, beta_tilde = self.variational_family.sample()
-
-                    # Compute log prior loss
-                    log_prior_losses = self.__model_joint_log_prob(
-                        theta, beta, beta_tilde, document_indices, tf.sparse.to_dense(outputs)
-                    )
-                    log_prior_loss_theta, log_prior_loss_beta, \
-                        log_prior_loss_beta_tilde, reconstruction_loss = log_prior_losses
-                else:
-                    # Compute the same except beta_tilde
-                    theta, beta = self.variational_family.sample()
-
-                    log_prior_losses = self.__model_joint_log_prob(
-                        theta=theta, beta=beta, beta_tilde=None, document_indices=document_indices,
-                        counts=tf.sparse.to_dense(outputs)
-                    )
-
-                    log_prior_loss_theta, log_prior_loss_beta, reconstruction_loss = log_prior_losses
+                # Compute log prior loss
+                log_prior_losses = self.__model_joint_log_prob(
+                    theta, beta, beta_tilde, document_indices, tf.sparse.to_dense(outputs)
+                )
+                log_prior_loss_theta, log_prior_loss_beta, \
+                    log_prior_loss_beta_tilde, reconstruction_loss = log_prior_losses
 
                 # Rescale reconstruction loss since it is only based on a mini-batch
                 recon_scaled = reconstruction_loss * tf.dtypes.cast(
                     tf.constant(self.model_settings["num_documents"]) / (tf.shape(outputs)[0]),
                     tf.float32)
+                log_prior = tf.reduce_sum(
+                    [log_prior_loss_theta, log_prior_loss_beta, log_prior_loss_beta_tilde, recon_scaled])
 
-                if len(self.keywords) != 0:
-                    log_prior = tf.reduce_sum(
-                        [log_prior_loss_theta, log_prior_loss_beta, log_prior_loss_beta_tilde, recon_scaled])
-
-                    # Compute entropy loss
-                    entropy = self.variational_family.log_prob(theta, beta, beta_tilde)
-                else:
-                    log_prior = tf.reduce_sum(
-                        [log_prior_loss_theta, log_prior_loss_beta, recon_scaled]
-                    )
-                    entropy = self.variational_family.log_prob(theta, beta)
+                # Compute entropy loss
+                entropy = self.variational_family.log_prob(theta, beta, beta_tilde)
 
                 # Calculate negative elbo
                 neg_elbo = - tf.reduce_mean(log_prior - entropy)
@@ -494,7 +458,7 @@ class SPF(tf.keras.Model):
             if i in list(range(len(self.keywords.keys()))):
                 return list(self.keywords.keys())[i]
             else:
-                return "No_keyword_topic_" + str(i - np.max(range(len(self.keywords))))
+                return "No_keyword_topic_" + str(i)
 
         topics = [recode_cats(i) for i in categories]
         return topics, E_theta
@@ -574,13 +538,10 @@ class SPF(tf.keras.Model):
         :return: Topic-word distribution dataframe.
         """
         E_beta = self.variational_parameter["a_beta_S"] / self.variational_parameter["b_beta_S"]
-        if len(self.keywords) != 0:
-            E_beta_tilde = self.variational_parameter["a_beta_tilde_S"] / self.variational_parameter["b_beta_tilde_S"]
-            beta_star = tf.tensor_scatter_nd_add(E_beta, self.kw_indices_topics, E_beta_tilde)
-        else:
-            beta_star = E_beta
+        E_beta_tilde = self.variational_parameter["a_beta_tilde_S"] / self.variational_parameter["b_beta_tilde_S"]
+        beta_star = tf.tensor_scatter_nd_add(E_beta, self.kw_indices_topics, E_beta_tilde)
         topic_names = list(self.keywords.keys())
-        rs_names = [f"residual_topic_{i+1}" for i in range(self.residual_topics)]
+        rs_names = [f"residual_topic_{i}" for i in range(self.residual_topics)]
         return pd.DataFrame(tf.transpose(beta_star), index=self.model_settings["vocab"], columns=topic_names + rs_names)
 
     def print_topics(self, num_words: int = 50):
@@ -589,41 +550,21 @@ class SPF(tf.keras.Model):
         :param num_words: Number of words printed per topic.
         """
         E_beta = self.variational_parameter["a_beta_S"] / self.variational_parameter["b_beta_S"]
-        if len(self.keywords) != 0:
-            E_beta_tilde = self.variational_parameter["a_beta_tilde_S"] / self.variational_parameter["b_beta_tilde_S"]
-            beta_star = tf.tensor_scatter_nd_add(E_beta, self.kw_indices_topics, E_beta_tilde)
-        else:
-            beta_star = E_beta
+        E_beta_tilde = self.variational_parameter["a_beta_tilde_S"] / self.variational_parameter["b_beta_tilde_S"]
+        beta_star = tf.tensor_scatter_nd_add(E_beta, self.kw_indices_topics, E_beta_tilde)
         top_words = np.argsort(-beta_star, axis=1)
-        # topic_strings = list()
-
-        hot_words = dict()
-
+        topic_strings = list()
         for topic_idx in range(self.model_settings["num_topics"]):
-            if topic_idx in list(range(len(self.keywords.keys()))):
-                topic_name = "{}".format(list(self.keywords.keys())[topic_idx])
-                words_per_topic = num_words
-                hot_words_topic = [self.model_settings["vocab"][word] for word in top_words[topic_idx, :words_per_topic]]
-                hot_words[topic_name] = hot_words_topic
-            else:
-                words_per_topic = num_words
-                hot_words[f"Residual_topic_{topic_idx - len(self.keywords) + 1}"] = \
-                    [self.model_settings["vocab"][word] for word in top_words[topic_idx, :words_per_topic]]
+            neutral_start_string = "{}:".format(list(self.keywords.keys())[topic_idx])
+            words_per_topic = num_words
+            neutral_row = [self.model_settings["vocab"][word] for word in top_words[topic_idx, :words_per_topic]]
+            neutral_row_string = ", ".join(neutral_row)
+            neutral_string = " ".join([neutral_start_string, neutral_row_string])
 
-        return hot_words
-
-
-        # for topic_idx in range(self.model_settings["num_topics"]):
-        #     neutral_start_string = "{}:".format(list(self.keywords.keys())[topic_idx])
-        #     words_per_topic = num_words
-        #     neutral_row = [self.model_settings["vocab"][word] for word in top_words[topic_idx, :words_per_topic]]
-        #     neutral_row_string = ", ".join(neutral_row)
-        #     neutral_string = " ".join([neutral_start_string, neutral_row_string])
-        #
-        #     topic_strings.append(" \n".join(
-        #         [neutral_string]
-        #     ))
-        # return np.array(topic_strings)
+            topic_strings.append(" \n".join(
+                [neutral_string]
+            ))
+        return np.array(topic_strings)
 
     def __repr__(self):
         return f"Seeded Poisson Factorization (SPF) model initialized with {len(self.keywords.keys())} keyword " \

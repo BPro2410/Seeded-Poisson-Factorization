@@ -2,8 +2,8 @@
 import numpy as np
 import pandas as pd
 
+# from SPF.SPF_model import SPF
 from SPF.SPF_model import SPF
-
 ###################
 ## Preliminaries ##
 ###################
@@ -17,7 +17,7 @@ health = ["try", "long", "water", "feel", "shave", "razor", "shaver", "pain", "h
 grocery = ["tea", "taste", "flavor", "coffee", "chocolate", "sugar", "milk", "delicious", "water", "diet"]
 
 keywords = {"pet supplies": pets, "toys games": toys, "beauty": beauty, "baby products": baby, "health personal care": health, "grocery gourmet food": grocery}
-
+# keywords = dict()
 # Load data
 df1 = pd.read_csv("./data/10k_amazon.csv")
 
@@ -27,7 +27,7 @@ df1 = pd.read_csv("./data/10k_amazon.csv")
 #########
 
 # Initialize the model
-spf1 = SPF(keywords = keywords, residual_topics=0)
+spf1 = SPF(keywords = keywords, residual_topics=2)
 spf1
 
 # Read documents and create the data required in the backend
@@ -43,6 +43,8 @@ spf1.model_train(lr = 0.1, epochs = 150, tensorboard = False)
 spf1.plot_model_loss(neg_elbo = True)
 categories, E_theta = spf1.calculate_topics()
 betas = spf1.calculate_topic_word_distributions()
+
+most_relevant_words = spf1.print_topics(num_words = 15)
 
 # Calculate model accuracy
 df1["SPF_estimates"] = categories
