@@ -10,6 +10,8 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 from sklearn.feature_extraction.text import CountVectorizer
 
+print(os.getcwd())
+# from Bernd.SPF_package.SPF_helper import SPF_helper, SPF_lr_schedules
 from SPF.SPF_helper import SPF_helper, SPF_lr_schedules
 
 # Shortcuts
@@ -37,7 +39,7 @@ class SPF(tf.keras.Model):
 
         super(SPF, self).__init__()
 
-        # Initialize model parameters
+        # Initialize model parameters and check if keywords are defined properly
         self.__keywords = SPF_helper._check_keywords(keywords, residual_topics)
         self.residual_topics = residual_topics
         self.model_settings = {"num_topics": len(self.__keywords.keys()) + residual_topics}
@@ -137,18 +139,23 @@ class SPF(tf.keras.Model):
         """
 
         # --- Create prior parameter ---
+
         self.prior_parameter = dict()
+
         # Theta prior parameter - document-topic distribution
         self.prior_parameter["a_theta"] = tf.fill(
             dims=[self.model_settings["num_documents"], self.model_settings["num_topics"]],
             value=self.prior_params["theta_shape"])
+
         self.prior_parameter["b_theta"] = tf.fill(
             dims=[self.model_settings["num_documents"], self.model_settings["num_topics"]],
             value=self.prior_params["theta_rate"])
+
         # Beta prior parameter - topic-word distribution
         self.prior_parameter["a_beta"] = tf.fill(
             dims=[self.model_settings["num_topics"], self.model_settings["num_words"]],
             value=self.prior_params["beta_shape"])
+
         self.prior_parameter["b_beta"] = tf.fill(
             dims=[self.model_settings["num_topics"], self.model_settings["num_words"]],
             value=self.prior_params["beta_rate"])
@@ -284,7 +291,7 @@ class SPF(tf.keras.Model):
         :param beta_tilde: q(\beta_tilde) sample.
         :param document_indices: Document indices relevant for batches
         :param counts: DTM counts (batched).
-        :return: Model prior loss.
+        :return: Log prior loss.
         """
         if len(self.keywords) != 0:
             model_joint = self.__create_prior_batched(document_indices)
@@ -295,24 +302,31 @@ class SPF(tf.keras.Model):
 
     def model_train(self, lr: float = 0.1,
                     epochs: int = 500,
-                    lr_scheduler: str = "dynamic",
-                    lr_scheduler_params= {"check_each": 150, "check_last": 50, "threshold": 0.001},
                     tensorboard: bool = False,
                     log_dir: str = os.getcwd(),
                     save_every: int = 1,
+                    early_stopping = False,
+                    pi = 25,
+                    delta = 0.0005,
                     priors: dict = {},
-                    variational_parameter: dict = {}):
+                    variational_parameter: dict = {},
+                    print_information = True,
+                    print_progressbar = False):
         """
         Model training.
+
         :param lr: Learning rate for Adam optimizer.
         :param epochs: Model iterations.
-        :param lr_scheduler: Indicates if a learning rate scheduler should be used. Use 'None' for no scheduling.
-        :param lr_scheduler_params: Parameter for the learning rate scheduler.
         :param tensorboard: Indicator whether tensorflow logs should be saved.
         :param log_dir: Directory for the tensorboard logs.
         :param save_every: Tensorboard log interval.
+        :param early_stopping: Bool, indicating whether early stopping should be activated or not.
+        :param pi: Interval of epochs that should be watched for early stopping mechanism.
+        :param delta: Convergence threshold for the early stopping mechanism.
         :param priors: Dictionary containing the prior parameter.
         :param variational_parameter: Dictionary containing the initial variational_parameter.
+        :param print_information: Bool wheter information about training loss should be printed.
+        :param print_progressbar: Bool, indicating whether a progressbar for training steps should be printed.
         :return: None
         """
 
@@ -328,12 +342,8 @@ class SPF(tf.keras.Model):
         # Define the variational family
         self.variational_family = self.__create_variational_family()
 
-        # Initialize model parameters and storage matrices
+        # Set optimizer
         optim = tf.optimizers.Adam(learning_rate=lr)
-        neg_elbos = list()
-        entropys = list()
-        log_priors = list()
-        recon_losses = list()
 
         def progress_bar(progress, total, epoch_runtime=0):
             """
@@ -410,8 +420,18 @@ class SPF(tf.keras.Model):
             summary_writer.set_as_default()
 
         # Start model training
-        progress_bar(0, epochs)
+        if print_progressbar == True:
+            progress_bar(0, epochs)
+
         self.lrs = [lr]
+
+        # Model metrics to save results
+        self.model_metrics = dict(
+            neg_elbo_loss = list(),
+            recon_loss = list(),
+            prior_loss = list(),
+            entropy_loss = list()
+        )
 
         # Start iterating
         for idx, epoch in enumerate(range(epochs)):
@@ -421,16 +441,6 @@ class SPF(tf.keras.Model):
             epoch_entropy = list()
             epoch_log_prior = list()
             epoch_reconstruction_loss = list()
-
-            # Check if lr should be changed
-            if (lr_scheduler == "dynamic") and (epoch % lr_scheduler_params["check_each"] == 0):
-                optim.lr.assign(SPF_lr_schedules.dynamic_schedule(epoch=epoch,
-                                                                  optim=optim,
-                                                                  losses=neg_elbos,
-                                                                  check_each=lr_scheduler_params["check_each"],
-                                                                  check_last=lr_scheduler_params["check_last"],
-                                                                  threshold=lr_scheduler_params["threshold"]))
-            self.lrs.append(optim.lr.numpy())
 
             # Iterate through batches
             for batch_index, batch in enumerate(iter(self.dataset)):
@@ -448,19 +458,28 @@ class SPF(tf.keras.Model):
                 epoch_log_prior.append(prior_loss)
                 epoch_reconstruction_loss.append(recon_loss)
 
-            # Store end of batch metrics
+            # Store epoch results
+            self.model_metrics["neg_elbo_loss"].append(np.mean(epoch_loss))
+            self.model_metrics["recon_loss"].append(np.mean(epoch_reconstruction_loss))
+            self.model_metrics["entropy_loss"].append(np.mean(epoch_entropy))
+            self.model_metrics["prior_loss"].append(np.mean(epoch_log_prior))
             end_time = time.time()
-            neg_elbos.append(np.mean(epoch_loss))
-            entropys.append(np.mean(epoch_entropy))
-            log_priors.append(np.mean(epoch_log_prior))
-            recon_losses.append(np.mean(epoch_reconstruction_loss))
+
+            if print_information == True:
+                # -- Print model stats --
+                print("EPOCH: {} -- Total loss: {:.1f} -- Reconstruction loss: {:.1f} -- "
+                    "Prior loss: {:.1f} -- Entropy loss: {:.1f}".format(epoch,
+                                            self.model_metrics["neg_elbo_loss"][-1],
+                                            self.model_metrics["recon_loss"][-1],
+                                            self.model_metrics["prior_loss"][-1],
+                                            self.model_metrics["entropy_loss"][-1]))
 
             if tensorboard == True and epoch % save_every == 0:
                 tf.summary.text("topics", self.print_topics(), step=epoch)
-                tf.summary.scalar("elbo/Negative ELBO", neg_elbos[-1], step=epoch)
-                tf.summary.scalar("elbo/Entropy loss", entropys[-1], step=epoch)
-                tf.summary.scalar("elbo/Log prior loss", log_priors[-1], step=epoch)
-                tf.summary.scalar("elbo/Reconstruction loss", recon_losses[-1], step=epoch)
+                tf.summary.scalar("elbo/Negative ELBO", self.model_metrics["neg_elbo_loss"][-1], step=epoch)
+                tf.summary.scalar("elbo/Entropy loss", self.model_metrics["entropy_loss"][-1], step=epoch)
+                tf.summary.scalar("elbo/Log prior loss", self.model_metrics["prior_loss"][-1], step=epoch)
+                tf.summary.scalar("elbo/Reconstruction loss", self.model_metrics["recon_loss"][-1], step=epoch)
                 tf.summary.histogram("params/Theta shape surrogate",
                                      self.variational_parameter["a_theta_S"], step=epoch)
                 tf.summary.histogram("params/Theta rate surrogate",
@@ -475,11 +494,18 @@ class SPF(tf.keras.Model):
                                      self.variational_parameter["b_beta_tilde_S"], step=epoch)
                 summary_writer.flush()
 
-            progress_bar(idx + 1, epochs, end_time - start_time)
+            if print_progressbar == True:
+                progress_bar(idx + 1, epochs, end_time - start_time)
+            
+            # Check if early stopping criterion is met
+            if early_stopping == True:
+                if epoch % pi == 0:
+                    last_losses = self.model_metrics["neg_elbo_loss"][-pi:]
+                    loss_pct_change = np.abs(np.diff(last_losses) / last_losses[:-1])
+                    mean_loss_pct_change = np.mean(loss_pct_change)
+                    if mean_loss_pct_change < delta:
+                        break
 
-        # Store model loss as object attribute
-        self.model_loss = {"negative_elbo": np.array(neg_elbos), "entropy": np.array(entropys),
-                           "log_prior": np.array(log_priors), "reconstruction_loss": np.array(recon_losses)}
 
     def calculate_topics(self):
         """
@@ -517,7 +543,7 @@ class SPF(tf.keras.Model):
                       fontsize=15, weight="bold", color="0.2")
             ax1.set_xlabel("Epoch", fontsize=13, color="0.2")
             ax1.set_ylabel("Negative ELBO loss", fontsize=15, color="0.2")
-            lns1 = ax1.plot(self.model_loss["negative_elbo"], color="black", label="Negative ELBO", lw=2.5, mec="w",
+            lns1 = ax1.plot(self.model_metrics["neg_elbo_loss"], color="black", label="Negative ELBO", lw=2.5, mec="w",
                             mew="2", alpha=0.9)
             lines = lns1
             labs = [l.get_label() for l in lines]
@@ -534,39 +560,23 @@ class SPF(tf.keras.Model):
             show_since = 0
             fig, axs = plt.subplots(nrows=3, ncols=1, figsize=(12, 11))
             axs[0].set_title("Log Likelihood loss with fixed data")
-            axs[0].plot(self.model_loss["log_prior"][show_since:], label="log_prior_loss")
-            axs[0].plot(self.model_loss["reconstruction_loss"][show_since:], label="reconstruction_loss")
+            axs[0].plot(self.model_metrics["prior_loss"][show_since:], label="log_prior_loss")
+            axs[0].plot(self.model_metrics["recon_loss"][show_since:], label="reconstruction_loss")
             axs[0].set_ylabel("Log Likelihood")
             axs[0].legend()
             axs[0].grid(True)
             axs[1].set_title("Entropy loss")
-            axs[1].plot(self.model_loss["entropy"][show_since:])
+            axs[1].plot(self.model_metrics["entropy_loss"][show_since:])
             axs[1].set_ylabel("Entropy")
             axs[1].grid(True)
             axs[2].set_title("Negative ELBO loss")
-            axs[2].plot(self.model_loss["negative_elbo"][show_since:])
+            axs[2].plot(self.model_metrics["neg_elbo_loss"][show_since:])
             axs[2].set_ylabel("Neg ELBO")
             axs[2].grid(True)
             axs[2].set_xlabel("Iteration")
             fig.suptitle("Variational Inference model losses")
             plt.show()
 
-        # if neg_elbo_lr_changes == True:
-        #     unique_lrs = np.unique(self.lrs)[::-1]
-        #     lr_change_at_epoch = np.array([self.lrs.index(i) for i in unique_lrs])
-        #     unique_lrs = unique_lrs[1:]
-        #     lr_change_at_epoch = lr_change_at_epoch[1:]
-        #
-        #     plt.figure(figsize=(12, 7))
-        #     plt.title("Negative ELBO loss and learning rate changes")
-        #     plt.plot(self.model_loss["negative_elbo"])
-        #     for idx, i in enumerate(unique_lrs):
-        #         plt.annotate(f"LR: {i:.4f}",
-        #                      xy=(lr_change_at_epoch[idx], plt.gca().get_ylim()[0]),
-        #                      xytext=(lr_change_at_epoch[idx], plt.gca().get_ylim()[0] - 0.15),
-        #                      arrowprops=dict(facecolor="black", shrink=0.05, alpha=0.3))
-        #     plt.grid(True, alpha=0.3)
-        #     plt.show()
 
     def calculate_topic_word_distributions(self):
         """
@@ -582,6 +592,7 @@ class SPF(tf.keras.Model):
         topic_names = list(self.keywords.keys())
         rs_names = [f"residual_topic_{i+1}" for i in range(self.residual_topics)]
         return pd.DataFrame(tf.transpose(beta_star), index=self.model_settings["vocab"], columns=topic_names + rs_names)
+
 
     def print_topics(self, num_words: int = 50):
         """
@@ -612,18 +623,6 @@ class SPF(tf.keras.Model):
 
         return hot_words
 
-
-        # for topic_idx in range(self.model_settings["num_topics"]):
-        #     neutral_start_string = "{}:".format(list(self.keywords.keys())[topic_idx])
-        #     words_per_topic = num_words
-        #     neutral_row = [self.model_settings["vocab"][word] for word in top_words[topic_idx, :words_per_topic]]
-        #     neutral_row_string = ", ".join(neutral_row)
-        #     neutral_string = " ".join([neutral_start_string, neutral_row_string])
-        #
-        #     topic_strings.append(" \n".join(
-        #         [neutral_string]
-        #     ))
-        # return np.array(topic_strings)
 
     def __repr__(self):
         return f"Seeded Poisson Factorization (SPF) model initialized with {len(self.keywords.keys())} keyword " \

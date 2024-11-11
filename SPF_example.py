@@ -9,12 +9,12 @@ from SPF.SPF_model import SPF
 ###################
 
 # Define keywords
-pets = ["dog", "cat", "cats", "dogs", "box", "food", "toy", "pet"]
-toys = ["toy", "game", "play", "fun", "son", "daughter", "kids", "playing", "christmas", "toys", "child", "gift"]
-beauty = ["skin", "color", "scent", "smell", "dry", "face", "look", "fragrance", "products", "dry", "perfume", "shampoo"]
-baby = ["baby", "seat", "son", "daughter", "newborn", "months", "diaper", "diapers", "car", "stroller", "pump", "bag", "child"]
-health = ["try", "long", "water", "feel", "shave", "razor", "shaver", "pain", "heart", "tooth", "balm", "pads", "taste", "drink","medical", "blade", "oil", "plastic", "shaker", "soap"]
-grocery = ["tea", "taste", "flavor", "coffee", "chocolate", "sugar", "milk", "delicious", "water", "diet"]
+pets = ["dog","cat", "litter", "cats", "dogs", "food", "box", "collar", "water", "pet"]
+toys = ["toy", "game", "play", "fun", "old", "son", "year", "loves", "kids", "daughter"]
+beauty = ["hair", "skin", "product", "color", "scent", "smell", "used", "dry", "using", "products"]
+baby = ["baby", "seat", "diaper", "diapers", "stroller", "bottles", "son", "pump", "gate", "months"]
+health = ["product", "like", "razor", "shave", "time", "day", "shaver", "better", "work", "years"]
+grocery = ["tea", "taste", "flavor", "coffee", "sauce", "chocolate", "sugar", "eat", "sweet", "delicious"]
 
 keywords = {"pet supplies": pets, "toys games": toys, "beauty": beauty, "baby products": baby, "health personal care": health, "grocery gourmet food": grocery}
 # keywords = dict()
@@ -35,7 +35,7 @@ spf1.read_docs(df1["Text"])
 # spf1.__dict__
 
 # Train the model
-spf1.model_train(lr = 0.1, epochs = 150, tensorboard = False)
+spf1.model_train(lr = 0.1, epochs = 150, tensorboard = False, early_stopping = False, print_information=True)
 # spf1.model_train(lr = 0.1, epochs = 150, tensorboard = True, log_dir = "C:/Users/Bernd/Downloads/test")
 # access via cmd: tensorboard --logdir=C:/Users/Bernd/Downloads/test
 
