@@ -59,7 +59,7 @@ class SPF_helper:
         priors["theta_rate"] = priors.get("theta_rate", 0.3)
         priors["beta_shape"] = priors.get("beta_shape", 0.3)
         priors["beta_rate"] = priors.get("beta_rate", 0.3)
-        priors["beta_tilde_shape"] = priors.get("beta_tilde_shape", 5.0)
+        priors["beta_tilde_shape"] = priors.get("beta_tilde_shape", 1.0)
         priors["beta_tilde_rate"] = priors.get("beta_tilde_rate", 0.3)
 
         return priors

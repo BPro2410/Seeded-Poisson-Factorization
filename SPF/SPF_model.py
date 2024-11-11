@@ -6,13 +6,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.sparse as sparse
+import scipy.stats as stats
 import tensorflow as tf
 import tensorflow_probability as tfp
 from sklearn.feature_extraction.text import CountVectorizer
 
 print(os.getcwd())
 # from Bernd.SPF_package.SPF_helper import SPF_helper, SPF_lr_schedules
-from SPF.SPF_helper import SPF_helper, SPF_lr_schedules
+from SPF.SPF_helper import SPF_helper
 
 # Shortcuts
 np.set_printoptions(suppress=True)
@@ -305,13 +306,13 @@ class SPF(tf.keras.Model):
                     tensorboard: bool = False,
                     log_dir: str = os.getcwd(),
                     save_every: int = 1,
-                    early_stopping = False,
-                    pi = 25,
-                    delta = 0.0005,
+                    early_stopping=False,
+                    pi=25,
+                    delta=0.0005,
                     priors: dict = {},
                     variational_parameter: dict = {},
-                    print_information = True,
-                    print_progressbar = False):
+                    print_information=True,
+                    print_progressbar=False):
         """
         Model training.
 
@@ -345,13 +346,13 @@ class SPF(tf.keras.Model):
         # Set optimizer
         optim = tf.optimizers.Adam(learning_rate=lr)
 
-        def progress_bar(progress, total, epoch_runtime=0):
+        def progress_bar(progress, total, epoch_runtime=0, neg_elbo = 0):
             """
             Simple progress bar to visualize the model runtime.
             """
             percent = 100 * (progress / float(total))
             bar = "*" * int(percent) + "-" * (100 - int(percent))
-            print(f"\r|{bar}| {percent:.2f}% [{epoch_runtime:.4f}/s per epoch]", end="\r")
+            print(f"\r|{bar}| {percent:.2f}% [{epoch_runtime:.4f}/s per epoch | Negative ELBO: {neg_elbo}]", end="\r")
 
         @tf.function
         @tf.autograph.experimental.do_not_convert
@@ -427,10 +428,10 @@ class SPF(tf.keras.Model):
 
         # Model metrics to save results
         self.model_metrics = dict(
-            neg_elbo_loss = list(),
-            recon_loss = list(),
-            prior_loss = list(),
-            entropy_loss = list()
+            neg_elbo_loss=list(),
+            recon_loss=list(),
+            prior_loss=list(),
+            entropy_loss=list()
         )
 
         # Start iterating
@@ -468,11 +469,11 @@ class SPF(tf.keras.Model):
             if print_information == True:
                 # -- Print model stats --
                 print("EPOCH: {} -- Total loss: {:.1f} -- Reconstruction loss: {:.1f} -- "
-                    "Prior loss: {:.1f} -- Entropy loss: {:.1f}".format(epoch,
-                                            self.model_metrics["neg_elbo_loss"][-1],
-                                            self.model_metrics["recon_loss"][-1],
-                                            self.model_metrics["prior_loss"][-1],
-                                            self.model_metrics["entropy_loss"][-1]))
+                      "Prior loss: {:.1f} -- Entropy loss: {:.1f}".format(epoch,
+                                                                          self.model_metrics["neg_elbo_loss"][-1],
+                                                                          self.model_metrics["recon_loss"][-1],
+                                                                          self.model_metrics["prior_loss"][-1],
+                                                                          self.model_metrics["entropy_loss"][-1]))
 
             if tensorboard == True and epoch % save_every == 0:
                 tf.summary.text("topics", self.print_topics(), step=epoch)
@@ -495,8 +496,8 @@ class SPF(tf.keras.Model):
                 summary_writer.flush()
 
             if print_progressbar == True:
-                progress_bar(idx + 1, epochs, end_time - start_time)
-            
+                progress_bar(idx + 1, epochs, end_time - start_time, self.model_metrics["neg_elbo_loss"][-1])
+
             # Check if early stopping criterion is met
             if early_stopping == True:
                 if epoch % pi == 0:
@@ -505,7 +506,6 @@ class SPF(tf.keras.Model):
                     mean_loss_pct_change = np.mean(loss_pct_change)
                     if mean_loss_pct_change < delta:
                         break
-
 
     def calculate_topics(self):
         """
@@ -577,7 +577,6 @@ class SPF(tf.keras.Model):
             fig.suptitle("Variational Inference model losses")
             plt.show()
 
-
     def calculate_topic_word_distributions(self):
         """
         Calculate posterior means for the topic-word distribution.
@@ -590,9 +589,8 @@ class SPF(tf.keras.Model):
         else:
             beta_star = E_beta
         topic_names = list(self.keywords.keys())
-        rs_names = [f"residual_topic_{i+1}" for i in range(self.residual_topics)]
+        rs_names = [f"residual_topic_{i + 1}" for i in range(self.residual_topics)]
         return pd.DataFrame(tf.transpose(beta_star), index=self.model_settings["vocab"], columns=topic_names + rs_names)
-
 
     def print_topics(self, num_words: int = 50):
         """
@@ -614,7 +612,8 @@ class SPF(tf.keras.Model):
             if topic_idx in list(range(len(self.keywords.keys()))):
                 topic_name = "{}".format(list(self.keywords.keys())[topic_idx])
                 words_per_topic = num_words
-                hot_words_topic = [self.model_settings["vocab"][word] for word in top_words[topic_idx, :words_per_topic]]
+                hot_words_topic = [self.model_settings["vocab"][word] for word in
+                                   top_words[topic_idx, :words_per_topic]]
                 hot_words[topic_name] = hot_words_topic
             else:
                 words_per_topic = num_words
@@ -623,6 +622,142 @@ class SPF(tf.keras.Model):
 
         return hot_words
 
+    def plot_seeded_topic_distribution(self, topic="beauty", x_max=10, detail=False):
+        """
+        Plots the variational topic word distribution of all seed words belonging to the topic parameter.
+
+        :param topic: Topic whose variational seeded topic-word distribution should be plotted.
+        :param x_max: Maximal value of the x axis
+        :param detail: Whether the parameter of the variational gamma distributions should be printed in the legend.
+        """
+
+        kws_per_topic = [(idx, topic, len(kws)) for idx, (topic, kws) in enumerate(self.__keywords.items())]
+        kw_df = pd.DataFrame(kws_per_topic, columns=["i", "topic", "nr_kws"])
+        kw_df["end_idx"] = np.cumsum(kw_df["nr_kws"])
+        kw_df["begin_idx"] = kw_df["end_idx"].shift(1).fillna(0)
+
+        # Select topic line
+        start = kw_df.loc[kw_df['topic'] == topic]["begin_idx"]
+        end = kw_df.loc[kw_df['topic'] == topic]["end_idx"]
+
+        # Slice parameter
+        q_beta_tilde_shape_topic = self.variational_parameter["a_beta_tilde_S"][int(start):int(end)]
+        q_beta_tilde_rate_topic = self.variational_parameter["b_beta_tilde_S"][int(start):int(end)]
+
+        # Plot distribution
+        topic_kws = list(self.__keywords[topic])
+        moments = zip(q_beta_tilde_shape_topic, q_beta_tilde_rate_topic, topic_kws)
+
+        # plot data
+        x = np.linspace(0, x_max, 1000)
+        fig, ax = plt.subplots(figsize=(12, 6))
+        for shape, rate, keyword in moments:
+            # ax.fill(x, stats.gamma.pdf(x, a = shape, scale = 1/rate), alpha = .5)
+            if detail == False:
+                ax.plot(x, stats.gamma.pdf(x, a=shape, scale=1 / rate), alpha=.7, label=f"{keyword}")
+            else:
+                ax.plot(x, stats.gamma.pdf(x, a=shape, scale=1 / rate), alpha=.7,
+                        label=r"$q({}){},{}$ = Gamma({:.2f}, {:.2f})".format(r"\tilde{\beta}", topic, keyword, shape,
+                                                                             rate))
+
+        ax = plt.gca()
+        for axis in ["bottom", "left"]:
+            ax.spines[axis].set_linewidth(2.5)
+            ax.spines[axis].set_color("0.2")
+
+        plt.xlabel('Value', fontsize=13, color="0.2")
+        plt.ylabel('Probability Density', fontsize=15, color="0.2")
+        plt.title(
+            'Variational adjusted topic-word distribution \n' r'for topic {}: $q({}){}$'.format(
+                topic, r"\tilde{\beta}",topic), fontsize=15, weight="bold", color="0.2")
+
+        plt.legend(loc=1, frameon=False, labelcolor="0.2",
+                   prop={"weight": "bold", "size": 13})
+        plt.grid(alpha=.3)
+        plt.show()
+
+    def plot_word_distribution(self, word="abc", topic="abc", x_max=10):
+        """
+        Shows the fitted variational distribution of q(\Tilde{\beta}){topic,word} and q(\beta^*)_{topic,word}.
+        """
+
+        def search_idx(word="abc", topic="abc"):
+            """
+            Returns the index of the keyword in the keyword dictionary - which is later 1 dimensional in beta tilde.
+            There are 2 cases to be considered here:
+            (1) A keyword is only used once
+            (2) A keyword is used multiple times in multiple topics
+            """
+
+            kws_per_topic = []
+            for idx, key in enumerate(self.__keywords.keys()):
+                kws_per_topic.append(len(self.__keywords[key]))
+
+            for key, value in self.__keywords.items():
+                if key == topic:
+                    if word in value:
+                        word_in_topic_index = list(value).index(word)
+                        word_in_topic_index
+                    else:
+                        print(f"{word} not defined as keyword for topic {topic}")
+                        return None
+
+            if list(self.__keywords.keys()).index(topic) != 0:
+                return np.sum(kws_per_topic[:list(self.__keywords.keys()).index(topic)]) + word_in_topic_index
+            else:
+                return word_in_topic_index
+
+        # Check if word exists in the vocabulary
+        if word not in list(self.model_settings["vocab"]):
+            raise ValueError(f"{word} not in vocabulary!")
+
+        # Return q(\tilde[\beta}) parameter if the word is a seed word
+        if word in list(self.__keywords[topic]):
+            keywords_all = [kw for kws in self.__keywords.values() for kw in kws]
+            kw_index = search_idx(word=word, topic=topic)
+
+            beta_tilde_shape = self.variational_parameter["a_beta_tilde_S"][kw_index]
+            beta_tilde_rate = self.variational_parameter["b_beta_tilde_S"][kw_index]
+        else:
+            print(f"{word} is not defined as a keyword for topic {topic}!")
+
+        # beta word index
+        word_idx = list(self.model_settings["vocab"]).index(word)
+        topic_idx = list(self.__keywords.keys()).index(topic)
+
+        # get beta moments
+        beta_shape = self.variational_parameter["a_beta_S"][(topic_idx, word_idx)]
+        beta_rate = self.variational_parameter["b_beta_S"][(topic_idx, word_idx)]
+
+        # zip data
+        if word in list(self.__keywords[topic]):
+            # compute combined
+            moments = zip([beta_shape, beta_tilde_shape], [beta_rate, beta_tilde_rate], [r"\beta^*", r"\tilde{\beta}"])
+        else:
+            moments = zip([beta_shape], [beta_rate], ["beta"])
+
+        # plot data
+        x = np.linspace(0, x_max, 1000)
+        fig, ax = plt.subplots(figsize=(12, 6))
+        for shape, rate, betas in moments:
+            # ax.fill(x, stats.gamma.pdf(x, a = shape, scale = 1/rate), alpha = .5)
+            ax.plot(x, stats.gamma.pdf(x, a=shape, scale=1 / rate), alpha=.7,
+                    label=r"$q({})_({},{})$ = Gamma({:.2f}, {:.2f})".format(
+                        betas, topic, word, shape, rate))
+
+        ax = plt.gca()
+        for axis in ["bottom", "left"]:
+            ax.spines[axis].set_linewidth(2.5)
+            ax.spines[axis].set_color("0.2")
+
+        plt.xlabel('Value', fontsize=13, color="0.2")
+        plt.ylabel('Probability Density', fontsize=15, color="0.2")
+        plt.title(f'Variational topic-word distributions', fontsize=15, weight="bold", color="0.2")
+
+        plt.legend(loc=1, frameon=False, labelcolor="0.2",
+                   prop={"weight": "bold", "size": 13})
+        plt.grid(alpha=.3)
+        plt.show()
 
     def __repr__(self):
         return f"Seeded Poisson Factorization (SPF) model initialized with {len(self.keywords.keys())} keyword " \
