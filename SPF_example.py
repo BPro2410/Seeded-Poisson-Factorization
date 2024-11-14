@@ -62,6 +62,6 @@ pprint.pprint(classification_report(df1.Cat1, df1.SPF_estimates))
 
 # -- Analyze keywords
 spf1.plot_seeded_topic_distribution(topic = "grocery gourmet food")
-spf1.plot_word_distribution(word = "dog", topic = "grocery gourmet food", x_max = 45)
+spf1.plot_word_distribution(word = "chocolate", topic = "grocery gourmet food", x_max = 45)
 spf1.plot_word_distribution(word = "dog", topic = "pet supplies", x_max = 45)
 

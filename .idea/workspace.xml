@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="43302585-51de-4aad-8e43-d88694e165cb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/SPF/old/20241114_SPF_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SPF/SPF_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/SPF/SPF_helper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SPF/SPF_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/SPF/SPF_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SPF_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/SPF_example.py" afterDir="false" />
     </list>
@@ -33,20 +33,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/Bernd/Documents/01_Coding/02_GitHub/Tensorflow_Probability",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Bernd/Documents/01_Coding/02_GitHub/Tensorflow_Probability&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization\SPF\old" />
@@ -69,7 +69,8 @@
       <workItem from="1714668515133" duration="3037000" />
       <workItem from="1731089502670" duration="1838000" />
       <workItem from="1731331435935" duration="545000" />
-      <workItem from="1731332009970" duration="4429000" />
+      <workItem from="1731332009970" duration="5444000" />
+      <workItem from="1731613586012" duration="116000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1708519408645</created>
@@ -106,7 +107,14 @@
       <option name="project" value="LOCAL" />
       <updated>1731332964245</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Added methods to analyze the variational topic-word distributions">
+      <created>1731339557294</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1731339557294</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -118,7 +126,8 @@
     <MESSAGE value="minor model changes" />
     <MESSAGE value="readme" />
     <MESSAGE value="prior change" />
-    <option name="LAST_COMMIT_MESSAGE" value="prior change" />
+    <MESSAGE value="Added methods to analyze the variational topic-word distributions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added methods to analyze the variational topic-word distributions" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Seeded_Poisson_Factorization$SPF_example.coverage" NAME="SPF_example Coverage Results" MODIFIED="1714669953241" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

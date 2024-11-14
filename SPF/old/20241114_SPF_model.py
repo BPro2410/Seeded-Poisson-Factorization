@@ -218,8 +218,7 @@ class SPF(tf.keras.Model):
         @tfd.JointDistributionCoroutineAutoBatched
         def variational_family(keywords=self.keywords):
             theta_surrogate = yield tfd.Gamma(
-                self.variational_parameter["a_theta_S"],
-                self.model_settings["doc_length_K"] * self.variational_parameter["b_theta_S"],
+                self.variational_parameter["a_theta_S"], self.variational_parameter["b_theta_S"],
                 name="theta_surrogate")
             beta_surrogate = yield tfd.Gamma(
                 self.variational_parameter["a_beta_S"], self.variational_parameter["b_beta_S"],
@@ -254,22 +253,22 @@ class SPF(tf.keras.Model):
 
             # Scale theta by document length (according to GaP paper)
             theta_batch = tf.gather(theta, document_indices)
-            # relevant_doc_lengths = tf.gather(doc_lengths, document_indices)
+            relevant_doc_lengths = tf.gather(doc_lengths, document_indices)
 
             # Compute Poisson rate
             if len(keywords) != 0:
                 beta_tilde = yield tfd.Gamma(a_beta_tilde, b_beta_tilde, name="adjusted_topic_word_distribution")
                 y = yield tfd.Poisson(
                     rate=tf.matmul(
-                        theta_batch,
-                        tf.tensor_scatter_nd_add(beta, kw_indices, beta_tilde)
+                        theta_batch / relevant_doc_lengths,  # theta_bar
+                        tf.tensor_scatter_nd_add(beta, kw_indices, beta_tilde)  # beta_star
                     ),
                     name="word_count"
                 )
             else:
                 y = yield tfd.Poisson(
                     rate=tf.matmul(
-                        theta_batch,
+                        theta_batch / relevant_doc_lengths,
                         beta
                     ),
                     name="word_count"
