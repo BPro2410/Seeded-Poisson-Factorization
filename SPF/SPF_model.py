@@ -1,7 +1,8 @@
+# Imports
+
 import os
 import time
 import warnings
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -10,19 +11,15 @@ import scipy.stats as stats
 import tensorflow as tf
 import tensorflow_probability as tfp
 from sklearn.feature_extraction.text import CountVectorizer
-
-print(os.getcwd())
-# from Bernd.SPF_package.SPF_helper import SPF_helper, SPF_lr_schedules
 from SPF.SPF_helper import SPF_helper
 
 # Shortcuts
-np.set_printoptions(suppress=True)
-warnings.filterwarnings("ignore")
+# np.set_printoptions(suppress=True)
+# warnings.filterwarnings("ignore")
 tfd = tfp.distributions
 tfb = tfp.bijectors
-Root = tfp.distributions.JointDistributionCoroutine.Root
 
-
+# SPF class
 class SPF(tf.keras.Model):
     """
     Tensorflow implementation of the Seeded Poisson Factorization topic model.
@@ -59,9 +56,9 @@ class SPF(tf.keras.Model):
                   batch_size: int = 1024,
                   seed: int = 2410):
         """
-        Reads documents, processes them into the form required by the SPF model and creates additional metadata.
+        Reads documents, processes them into the format required by the SPF model and creates additional metadata.
 
-        :param text: Text to be classified.
+        :param text: Text to be classified. Format: Either a list of strings or pd.Series.
         :param count_vectorizer: CountVectorizer object used to create the DTM.
         :param batch_size: Batch_size used for training.
         :param seed: Seed used for shuffeling the data.
@@ -75,21 +72,21 @@ class SPF(tf.keras.Model):
         # Create DTM
         counts = sparse.csr_matrix(cv.transform(text), dtype=np.float32)
 
-        # check if there are documents with 0 tokens
+        # Check if there are documents with 0 tokens
         zero_idx = np.where(np.sum(counts, axis=1) == 0)
         if len(zero_idx[0]) > 0:
             raise ValueError(f"There are documents with zero words after tokenization. "
-                             f"Please remove them or provide a custom tokenizer. Documents: {zero_idx[0]}")
+                             f"Please remove them or adjust the tokenizer. Documents: {zero_idx[0]}.")
 
         # Add metadata
         self.model_settings["vocab"] = cv.get_feature_names_out()
         self.model_settings["num_words"] = len(self.model_settings["vocab"])
         self.model_settings["num_documents"] = counts.shape[0]
-        doc_lengths = tf.reduce_sum(counts.toarray(), axis=1)
-        self.model_settings["doc_length_K"] = tf.concat([doc_lengths[:, tf.newaxis]] *
+        self.model_settings["doc_length_K"] = tf.concat([counts.sum(axis = 1)] *
                                                         self.model_settings["num_topics"], axis=1)
 
         # Check if seed words are contained in vocabulary & create keyword indices tensor for beta-tilde
+        # Remove keywords that do not occur from the keywords dictionary
         self.kw_indices_topics = list()
         not_in_vocab_words = list()
 
@@ -133,6 +130,9 @@ class SPF(tf.keras.Model):
 
         self.dataset = dataset.shuffle(1000, reshuffle_each_iteration=True).batch(batch_size).prefetch(tf.data.AUTOTUNE)
 
+        print(f"DTM created with: {counts.shape[0]} documents and {counts.shape[1]} unique words!")
+
+
     def __create_model_parameter(self):
         """
         Creates both the prior parameter and variational parameter.
@@ -140,7 +140,6 @@ class SPF(tf.keras.Model):
         """
 
         # --- Create prior parameter ---
-
         self.prior_parameter = dict()
 
         # Theta prior parameter - document-topic distribution
@@ -252,9 +251,8 @@ class SPF(tf.keras.Model):
             # Beta over Topics
             beta = yield tfd.Gamma(a_beta, b_beta, name="topic_word_distribution")
 
-            # Scale theta by document length (according to GaP paper)
+            # Get batch of thetas
             theta_batch = tf.gather(theta, document_indices)
-            # relevant_doc_lengths = tf.gather(doc_lengths, document_indices)
 
             # Compute Poisson rate
             if len(keywords) != 0:
@@ -425,8 +423,6 @@ class SPF(tf.keras.Model):
         if print_progressbar == True:
             progress_bar(0, epochs)
 
-        self.lrs = [lr]
-
         # Model metrics to save results
         self.model_metrics = dict(
             neg_elbo_loss=list(),
@@ -526,57 +522,30 @@ class SPF(tf.keras.Model):
         topics = [recode_cats(i) for i in categories]
         return topics, E_theta
 
-    def plot_model_loss(self,
-                        neg_elbo: bool = True,
-                        detail_plot: bool = False,
-                        neg_elbo_lr_changes: bool = False):
+    def plot_model_loss(self):
         """
-        Plot model loss to check convergence.
-        :param neg_elbo: Indicator whether the negative ELBO loss should be plotted.
-        :param detail_plot: Indicator whether all losses should be plotted.
-        :param neg_elbo_lr_changes: Indicator whether the learning rate changes should be plotted on the
-        negative ELBO loss plot.
+        Plots the model loss to check convergence.
         :return: None
         """
-        if neg_elbo == True:
-            fig, ax1 = plt.subplots(figsize=(12, 7))
-            plt.title(f"SPF loss plot on {self.model_settings['num_documents']} documents",
-                      fontsize=15, weight="bold", color="0.2")
-            ax1.set_xlabel("Epoch", fontsize=13, color="0.2")
-            ax1.set_ylabel("Negative ELBO loss", fontsize=15, color="0.2")
-            lns1 = ax1.plot(self.model_metrics["neg_elbo_loss"], color="black", label="Negative ELBO", lw=2.5, mec="w",
-                            mew="2", alpha=0.9)
-            lines = lns1
-            labs = [l.get_label() for l in lines]
-            ax1.legend(lines, labs, loc=1, frameon=False, labelcolor="0.2",
-                       prop={"weight": "bold", "size": 13})
-            for axis in ["bottom", "left"]:
-                ax1.spines[axis].set_linewidth(2.5)
-                ax1.spines[axis].set_color("0.2")
-            ax1.tick_params(width=2.5, labelsize=13)
-            fig.tight_layout()
-            plt.show()
 
-        if detail_plot == True:
-            show_since = 0
-            fig, axs = plt.subplots(nrows=3, ncols=1, figsize=(12, 11))
-            axs[0].set_title("Log Likelihood loss with fixed data")
-            axs[0].plot(self.model_metrics["prior_loss"][show_since:], label="log_prior_loss")
-            axs[0].plot(self.model_metrics["recon_loss"][show_since:], label="reconstruction_loss")
-            axs[0].set_ylabel("Log Likelihood")
-            axs[0].legend()
-            axs[0].grid(True)
-            axs[1].set_title("Entropy loss")
-            axs[1].plot(self.model_metrics["entropy_loss"][show_since:])
-            axs[1].set_ylabel("Entropy")
-            axs[1].grid(True)
-            axs[2].set_title("Negative ELBO loss")
-            axs[2].plot(self.model_metrics["neg_elbo_loss"][show_since:])
-            axs[2].set_ylabel("Neg ELBO")
-            axs[2].grid(True)
-            axs[2].set_xlabel("Iteration")
-            fig.suptitle("Variational Inference model losses")
-            plt.show()
+        fig, ax1 = plt.subplots(figsize=(12, 7))
+        plt.title(f"SPF loss plot on {self.model_settings['num_documents']} documents",
+                  fontsize=15, weight="bold", color="0.2")
+        ax1.set_xlabel("Epoch", fontsize=13, color="0.2")
+        ax1.set_ylabel("Negative ELBO loss", fontsize=15, color="0.2")
+        lns1 = ax1.plot(self.model_metrics["neg_elbo_loss"], color="black", label="Negative ELBO", lw=2.5, mec="w",
+                        mew="2", alpha=0.9)
+        lines = lns1
+        labs = [l.get_label() for l in lines]
+        ax1.legend(lines, labs, loc=1, frameon=False, labelcolor="0.2",
+                   prop={"weight": "bold", "size": 13})
+        for axis in ["bottom", "left"]:
+            ax1.spines[axis].set_linewidth(2.5)
+            ax1.spines[axis].set_color("0.2")
+        ax1.tick_params(width=2.5, labelsize=13)
+        fig.tight_layout()
+        plt.show()
+
 
     def calculate_topic_word_distributions(self):
         """
@@ -597,6 +566,7 @@ class SPF(tf.keras.Model):
         """
         Prints the words with the highest mean intensity per topic.
         :param num_words: Number of words printed per topic.
+        :return: Dictionary containing the most important words for each topic.
         """
         E_beta = self.variational_parameter["a_beta_S"] / self.variational_parameter["b_beta_S"]
         if len(self.keywords) != 0:
@@ -605,7 +575,6 @@ class SPF(tf.keras.Model):
         else:
             beta_star = E_beta
         top_words = np.argsort(-beta_star, axis=1)
-        # topic_strings = list()
 
         hot_words = dict()
 
@@ -623,7 +592,9 @@ class SPF(tf.keras.Model):
 
         return hot_words
 
-    def plot_seeded_topic_distribution(self, topic="beauty", x_max=10, detail=False):
+    def plot_seeded_topic_distribution(self, topic: str ="beauty",
+                                       x_max: int = 10,
+                                       detail: bool =False):
         """
         Plots the variational topic word distribution of all seed words belonging to the topic parameter.
 
@@ -680,6 +651,9 @@ class SPF(tf.keras.Model):
     def plot_word_distribution(self, word="abc", topic="abc", x_max=10):
         """
         Shows the fitted variational distribution of q(\Tilde{\beta}){topic,word} and q(\beta^*)_{topic,word}.
+        :param word: Word for which the distribution should be plotted
+        :param topic: Topic for the topic-word distribution
+        :param x_max: Maximum x value for the plot
         """
 
         def search_idx(word="abc", topic="abc"):

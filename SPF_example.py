@@ -1,7 +1,12 @@
 # Imports
 import numpy as np
 import pandas as pd
+import tensorflow as tf
 
+# Set seed
+tf.random.set_seed(42)
+
+# Import SPF
 from SPF.SPF_model import SPF
 
 ###################
@@ -18,10 +23,8 @@ grocery = ["tea", "taste", "flavor", "coffee", "sauce", "chocolate", "sugar", "e
 
 keywords = {"pet supplies": pets, "toys games": toys, "beauty": beauty, "baby products": baby, "health personal care": health, "grocery gourmet food": grocery}
 
-
 # Load data
-df1 = pd.read_csv("./data/10k_amazon.csv")
-
+df1 = pd.read_csv("./data/30k_amazon.csv")
 
 #########
 ## SPF ##
@@ -31,24 +34,18 @@ df1 = pd.read_csv("./data/10k_amazon.csv")
 spf1 = SPF(keywords = keywords, residual_topics = 0)
 spf1
 
-
 # -- Read documents and create the data required in the backend
 spf1.read_docs(df1["Text"])
 
-
 # -- Train the model
 spf1.model_train(lr = 0.1, epochs = 150, tensorboard = False, early_stopping = False, print_information=True)
-# spf1.model_train(lr = 0.1, epochs = 150, tensorboard = True, log_dir = "C:/Users/Bernd/Downloads/test")
-# access via cmd: tensorboard --logdir=C:/Users/Bernd/Downloads/test
-
 
 # -- Analyze model results
-spf1.plot_model_loss(neg_elbo = True)
+spf1.plot_model_loss()
 categories, E_theta = spf1.calculate_topics()
 betas = spf1.calculate_topic_word_distributions()
-
 most_relevant_words = spf1.print_topics(num_words = 15)
-
+spf1.model_metrics
 
 # -- Calculate model accuracy
 df1["SPF_estimates"] = categories
@@ -59,9 +56,8 @@ from sklearn.metrics import classification_report
 import pprint
 pprint.pprint(classification_report(df1.Cat1, df1.SPF_estimates))
 
-
 # -- Analyze keywords
-spf1.plot_seeded_topic_distribution(topic = "grocery gourmet food")
+spf1.plot_seeded_topic_distribution(topic = "pet supplies", x_max = 17)
 spf1.plot_word_distribution(word = "chocolate", topic = "grocery gourmet food", x_max = 45)
-spf1.plot_word_distribution(word = "dog", topic = "pet supplies", x_max = 45)
+spf1.plot_word_distribution(word = "dog", topic = "pet supplies", x_max = 25)
 

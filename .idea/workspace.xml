@@ -5,10 +5,72 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="43302585-51de-4aad-8e43-d88694e165cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SPF/old/20241114_SPF_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SPF/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/SPF/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SPF/SPF_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/SPF/SPF_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SPF/old/20241114_SPF_model.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/SPF_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/SPF_example.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SPF_example_notebook.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/SPF_example_notebook.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/Paper_plots.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/dataset_description.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/SeededLDA/10k/10k_amazon_fit.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/SeededLDA/10k/10k_seededlda_model.rds" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/SeededLDA/1k/1k_amazon_fit.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/SeededLDA/1k/1k_seededlda_model.rds" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/SeededLDA/30k/30k_amazon_fit.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/SeededLDA/30k/30k_seededlda_model.rds" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/SeededLDA/5k/5k_amazon_fit.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/SeededLDA/5k/5k_seededlda_model.rds" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/SeededLDA/fit_SeededLDA.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/10k/10k_VSTM_beta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/10k/10k_VSTM_df.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/10k/10k_VSTM_theta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/15k/15k_VSTM_beta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/15k/15k_VSTM_df.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/15k/15k_VSTM_theta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/1k/1k_VSTM_beta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/1k/1k_VSTM_df.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/1k/1k_VSTM_theta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/20k/20k_VSTM_beta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/20k/20k_VSTM_df.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/20k/20k_VSTM_theta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/25k/25k_VSTM_beta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/25k/25k_VSTM_df.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/25k/25k_VSTM_theta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/30k/30k_VSTM_a_beta_tilde_S.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/30k/30k_VSTM_b_beta_tilde_S.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/30k/30k_VSTM_beta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/30k/30k_VSTM_df.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/30k/30k_VSTM_loss_metrics.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/30k/30k_VSTM_metrics.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/30k/30k_VSTM_theta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/5k/5k_VSTM_beta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/5k/5k_VSTM_df.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/VSTM/5k/5k_VSTM_theta.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/compute_model_metrics.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/keyATM/10k/10k_amazon_fit.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/keyATM/10k/10k_key_model.rds" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/keyATM/1k/1k_amazon_fit.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/keyATM/1k/1k_key_model.rds" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/keyATM/30k/30k_amazon_fit.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/keyATM/30k/30k_key_model.rds" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/keyATM/5k/5k_amazon_fit.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/keyATM/5k/5k_key_model.rds" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/final_model_fits/keyATM/fit_keyATM.R" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/a_beta_S.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/a_beta_tilde_S.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/a_theta_S.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/b_beta_S.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/b_beta_tilde_S.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/b_theta_S.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/e_beta.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/e_beta_star.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/e_beta_tilde.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/e_theta.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_variational_parameter/kw_indices.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/data/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,22 +95,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Bernd/Documents/01_Coding/02_GitHub/Tensorflow_Probability&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/Bernd/Documents/01_Coding/02_GitHub/Seeded-Poisson-Factorization",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization" />
       <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization\SPF\old" />
     </key>
   </component>
@@ -70,7 +133,14 @@
       <workItem from="1731089502670" duration="1838000" />
       <workItem from="1731331435935" duration="545000" />
       <workItem from="1731332009970" duration="5444000" />
-      <workItem from="1731613586012" duration="116000" />
+      <workItem from="1731613586012" duration="302000" />
+      <workItem from="1736699111124" duration="1009000" />
+      <workItem from="1736881865712" duration="253000" />
+      <workItem from="1738356982974" duration="40000" />
+      <workItem from="1738681623263" duration="859000" />
+      <workItem from="1738682497746" duration="627000" />
+      <workItem from="1739190687269" duration="14000" />
+      <workItem from="1741094152809" duration="4740000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1708519408645</created>
@@ -114,7 +184,14 @@
       <option name="project" value="LOCAL" />
       <updated>1731339557294</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Change variational theta rate">
+      <created>1731613850726</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1731613850726</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -127,9 +204,10 @@
     <MESSAGE value="readme" />
     <MESSAGE value="prior change" />
     <MESSAGE value="Added methods to analyze the variational topic-word distributions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added methods to analyze the variational topic-word distributions" />
+    <MESSAGE value="Change variational theta rate" />
+    <option name="LAST_COMMIT_MESSAGE" value="Change variational theta rate" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Seeded_Poisson_Factorization$SPF_example.coverage" NAME="SPF_example Coverage Results" MODIFIED="1714669953241" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Seeded_Poisson_Factorization$SPF_example.coverage" NAME="SPF_example Coverage Results" MODIFIED="1738681750903" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
