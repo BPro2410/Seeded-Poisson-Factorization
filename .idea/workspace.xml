@@ -5,21 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="43302585-51de-4aad-8e43-d88694e165cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/release.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analysis/reproduction/fitted_params/run_SPF.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pypi.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/seededPF/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/release.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/release.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SPF/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/seededPF/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SPF/SPF_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededPF/SPF_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SPF/SPF_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededPF/SPF_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SPF_example.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SPF_example_notebook.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/examples/SPF_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/examples/SPF_example.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_params/run_SPF.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/reproduction/fitted_params/run_SPF.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analysis/reproduction/robustness/SPF_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/reproduction/robustness/SPF_example.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seededPF/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seededPF/SPF_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/SPF_helper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seededPF/SPF_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/SPF_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seededPF/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/__init__.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +92,8 @@
       <workItem from="1741261527319" duration="290000" />
       <workItem from="1741262628408" duration="806000" />
       <workItem from="1741263448906" duration="4039000" />
-      <workItem from="1741269277283" duration="1682000" />
+      <workItem from="1741269277283" duration="1750000" />
+      <workItem from="1741271063602" duration="1164000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1708519408645</created>
@@ -169,7 +165,21 @@
       <option name="project" value="LOCAL" />
       <updated>1741178039042</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="prepare for release">
+      <created>1741271000439</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1741271000439</updated>
+    </task>
+    <task id="LOCAL-00012" summary="prepare for release 0.0.1">
+      <created>1741271020081</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1741271020081</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,13 +194,15 @@
     <MESSAGE value="Added methods to analyze the variational topic-word distributions" />
     <MESSAGE value="Change variational theta rate" />
     <MESSAGE value="Add information from paper" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add information from paper" />
+    <MESSAGE value="prepare for release" />
+    <MESSAGE value="prepare for release 0.0.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="prepare for release 0.0.1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/seededPF/SPF_model.py</url>
+          <url>file://$PROJECT_DIR$/seededpf/SPF_model.py</url>
           <line>2</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>

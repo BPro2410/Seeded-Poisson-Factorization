@@ -10,7 +10,7 @@ license = "MIT"
 readme = "pypi.md"
 homepage = "https://github.com/BPro2410/Seeded-Poisson-Factorization"
 repository = "https://github.com/BPro2410/Seeded-Poisson-Factorization"
-keywords = ["nlp", "topicmodel", "topic-modeling", "textanalysis", "text mining", "poisson factorization", "variational inference"]
+keywords = ["nlp", "topicmodel", "topic-modeling", "textanalysis", "text mining"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"

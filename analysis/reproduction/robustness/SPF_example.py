@@ -6,8 +6,8 @@ import tensorflow as tf
 # Set seed
 tf.random.set_seed(42)
 
-# Import seededPF
-from seededPF.SPF_model import SPF
+# Import seededpf
+from seededpf.SPF_model import SPF
 
 ###################
 ## Preliminaries ##
@@ -42,7 +42,7 @@ BETA_TILDE_SHAPE = 1.0
 
 
 #########
-## seededPF ##
+## seededpf ##
 #########
 
 # Load data

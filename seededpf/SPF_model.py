@@ -11,7 +11,7 @@ import scipy.stats as stats
 import tensorflow as tf
 import tensorflow_probability as tfp
 from sklearn.feature_extraction.text import CountVectorizer
-from seededPF.SPF_helper import SPF_helper
+from seededpf.SPF_helper import SPF_helper
 
 # Shortcuts
 # np.set_printoptions(suppress=True)
@@ -19,7 +19,7 @@ from seededPF.SPF_helper import SPF_helper
 tfd = tfp.distributions
 tfb = tfp.bijectors
 
-# seededPF class
+# seededpf class
 class SPF(tf.keras.Model):
     """
     Tensorflow implementation of the Seeded Poisson Factorization topic model.
@@ -28,7 +28,7 @@ class SPF(tf.keras.Model):
     def __init__(self, keywords: dict,
                  residual_topics: int = 0):
         """
-        Initialization of the seededPF object.
+        Initialization of the seededpf object.
 
         :param keywords: Dictionary containing topics (keys) and keywords (values) of the form
         {'topic_1':['word1', 'word2'],'topic_2':['word1', 'word2']}
@@ -60,7 +60,7 @@ class SPF(tf.keras.Model):
                   batch_size: int = 1024,
                   seed: int = 2410):
         """
-        Reads documents, processes them into the format required by the seededPF model and creates additional metadata.
+        Reads documents, processes them into the format required by the seededpf model and creates additional metadata.
 
         :param text: Text to be classified. Format: Either a list of strings or pd.Series.
         :param count_vectorizer: CountVectorizer object used to create the DTM.
@@ -246,7 +246,7 @@ class SPF(tf.keras.Model):
                              a_beta_tilde, b_beta_tilde,
                              kw_indices, document_indices, doc_lengths, keywords):
             """
-            Generative model of the seededPF!
+            Generative model of the seededpf!
             """
 
             # Theta over documents
@@ -533,7 +533,7 @@ class SPF(tf.keras.Model):
         """
 
         fig, ax1 = plt.subplots(figsize=(12, 7))
-        plt.title(f"seededPF loss plot on {self.model_settings['num_documents']} documents",
+        plt.title(f"seededpf loss plot on {self.model_settings['num_documents']} documents",
                   fontsize=15, weight="bold", color="0.2")
         ax1.set_xlabel("Epoch", fontsize=13, color="0.2")
         ax1.set_ylabel("Negative ELBO loss", fontsize=15, color="0.2")
@@ -748,5 +748,5 @@ class SPF(tf.keras.Model):
         plt.show()
 
     def __repr__(self):
-        return f"Seeded Poisson Factorization (seededPF) model initialized with {len(self.keywords.keys())} keyword " \
+        return f"Seeded Poisson Factorization (seededpf) model initialized with {len(self.keywords.keys())} keyword " \
                f"topics and {self.residual_topics} residual topics."

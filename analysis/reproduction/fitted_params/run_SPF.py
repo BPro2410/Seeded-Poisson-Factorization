@@ -6,8 +6,8 @@ import tensorflow as tf
 # Set seed
 tf.random.set_seed(42)
 
-# Import seededPF
-from seededPF.SPF_model import SPF
+# Import seededpf
+from seededpf.SPF_model import SPF
 
 ###################
 ## Preliminaries ##
@@ -27,7 +27,7 @@ keywords = {"pet supplies": pets, "toys games": toys, "beauty": beauty, "baby pr
 df1 = pd.read_csv("./data/30k_amazon.csv")
 
 #########
-## seededPF ##
+## seededpf ##
 #########
 
 # -- Initialize the model
