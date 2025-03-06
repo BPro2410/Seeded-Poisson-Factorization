@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "seededPF"
-version = "0.0.1"
+version = "0.0.2"
 description = "SeededPF is a seed guided topic model based on Poisson factorization."
 authors = ["Bernd Prostmaier <b.prostmaier@icloud.com>",
     "Jan Vavra <vavraj@karlin.mff.cuni.cz>",
