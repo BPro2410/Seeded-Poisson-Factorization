@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "seededPF"
+version = "0.0.1"
+description = "SeededPF is a seed guided topic model based on Poisson factorization."
+authors = ["Bernd Prostmaier <b.prostmaier@icloud.com>",
+    "Jan Vavra <vavraj@karlin.mff.cuni.cz>",
+    "Bettina Gruen <bettina.gruen@wu.ac.at>",
+    "Paul Hofmarcher <paul.hofmarcher@plus.ac.at>"]
+license = "MIT"
+readme = "pypi.md"
+homepage = "https://github.com/BPro2410/Seeded-Poisson-Factorization"
+repository = "https://github.com/BPro2410/Seeded-Poisson-Factorization"
+keywords = ["nlp", "topicmodel", "topic-modeling", "textanalysis", "text mining", "poisson factorization", "variational inference"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+matplotlib = "3.7"
+numpy = "2.0"
+pandas = "2.2.3"
+scikit_learn = "1.6"
+scipy = "1.15"
+seaborn = "0.13"
+tensorflow = "2.18"
+tensorflow_probability = "0.25"
+tf-keras = "2.18"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.11.2"
+types-pygments = "^2.18.0.20240506"
+pytest = "^8.3.3"
+pytest-mock = "^3.14.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+

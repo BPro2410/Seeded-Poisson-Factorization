@@ -11,7 +11,7 @@ import scipy.stats as stats
 import tensorflow as tf
 import tensorflow_probability as tfp
 from sklearn.feature_extraction.text import CountVectorizer
-from SPF.SPF_helper import SPF_helper
+from seededPF.SPF_helper import SPF_helper
 
 # Shortcuts
 # np.set_printoptions(suppress=True)
@@ -19,7 +19,7 @@ from SPF.SPF_helper import SPF_helper
 tfd = tfp.distributions
 tfb = tfp.bijectors
 
-# SPF class
+# seededPF class
 class SPF(tf.keras.Model):
     """
     Tensorflow implementation of the Seeded Poisson Factorization topic model.
@@ -28,7 +28,7 @@ class SPF(tf.keras.Model):
     def __init__(self, keywords: dict,
                  residual_topics: int = 0):
         """
-        Initialization of the SPF object.
+        Initialization of the seededPF object.
 
         :param keywords: Dictionary containing topics (keys) and keywords (values) of the form
         {'topic_1':['word1', 'word2'],'topic_2':['word1', 'word2']}
@@ -41,6 +41,10 @@ class SPF(tf.keras.Model):
         self.__keywords = SPF_helper._check_keywords(keywords, residual_topics)
         self.residual_topics = residual_topics
         self.model_settings = {"num_topics": len(self.__keywords.keys()) + residual_topics}
+
+        if not tf.config.list_physical_devices("GPU"):
+            warnings.warn("No GPU support for your tensorflow version! Consider manual installing tensorflow with gpu "
+                          f"support if possible. Tensorflow version: {tf.__version__}.")
 
     @property
     def keywords(self):
@@ -56,7 +60,7 @@ class SPF(tf.keras.Model):
                   batch_size: int = 1024,
                   seed: int = 2410):
         """
-        Reads documents, processes them into the format required by the SPF model and creates additional metadata.
+        Reads documents, processes them into the format required by the seededPF model and creates additional metadata.
 
         :param text: Text to be classified. Format: Either a list of strings or pd.Series.
         :param count_vectorizer: CountVectorizer object used to create the DTM.
@@ -91,13 +95,13 @@ class SPF(tf.keras.Model):
         not_in_vocab_words = list()
 
         for idx, topic in enumerate(self.__keywords.keys()):
-            # idx indicates the topic index -> used for beta-tilde adjustments
+            # idx indicates the topic index. Used for beta-tilde adjustments.
             for keyword in self.__keywords[topic]:
                 try:
                     kw_index = list(self.model_settings["vocab"]).index(keyword)
                     self.kw_indices_topics.append([idx, kw_index])
                 except Exception:
-                    print(f"### Keyword: {keyword} from topic {topic} is not in vocabulary. "
+                    print(f"NOTE: The seed word '{keyword}' defined for topic '{topic}' is not in the vocabulary. "
                           f"Keyword dictionary will be pruned.")
                     not_in_vocab_words.append(keyword)
 
@@ -242,7 +246,7 @@ class SPF(tf.keras.Model):
                              a_beta_tilde, b_beta_tilde,
                              kw_indices, document_indices, doc_lengths, keywords):
             """
-            Generative model of the SPF!
+            Generative model of the seededPF!
             """
 
             # Theta over documents
@@ -447,7 +451,7 @@ class SPF(tf.keras.Model):
 
                 inputs, outputs = batch  # inputs = {'document_indices':[]}, outputs = counts
 
-                # Calculate loss
+                # Calculate loss & reparametrize
                 neg_elbo, entropy, prior_loss, recon_loss = train_step(inputs, outputs, optim)
 
                 # Store batch loss in epoch loss
@@ -504,7 +508,7 @@ class SPF(tf.keras.Model):
                     if mean_loss_pct_change < delta:
                         break
 
-    def calculate_topics(self):
+    def return_topics(self):
         """
         Calculate topic mean intensities and recode to the topics.
         :return: (Estimated topics, theta vector)
@@ -529,7 +533,7 @@ class SPF(tf.keras.Model):
         """
 
         fig, ax1 = plt.subplots(figsize=(12, 7))
-        plt.title(f"SPF loss plot on {self.model_settings['num_documents']} documents",
+        plt.title(f"seededPF loss plot on {self.model_settings['num_documents']} documents",
                   fontsize=15, weight="bold", color="0.2")
         ax1.set_xlabel("Epoch", fontsize=13, color="0.2")
         ax1.set_ylabel("Negative ELBO loss", fontsize=15, color="0.2")
@@ -592,29 +596,33 @@ class SPF(tf.keras.Model):
 
         return hot_words
 
-    def plot_seeded_topic_distribution(self, topic: str ="beauty",
+    def plot_seeded_topic_distribution(self, topic: str,
                                        x_max: int = 10,
                                        detail: bool =False):
         """
         Plots the variational topic word distribution of all seed words belonging to the topic parameter.
 
-        :param topic: Topic whose variational seeded topic-word distribution should be plotted.
+        :param topic: Topic name whose variational seeded topic-word distribution should be plotted.
         :param x_max: Maximal value of the x axis
         :param detail: Whether the parameter of the variational gamma distributions should be printed in the legend.
         """
+        topic_names = list(self.keywords.keys())
+        rs_names = [f"residual_topic_{i + 1}" for i in range(self.residual_topics)]
+        if topic not in topic_names + rs_names:
+            raise ValueError(f"{topic} is not a valid topic name. Topic names are: {topic_names + rs_names}")
 
         kws_per_topic = [(idx, topic, len(kws)) for idx, (topic, kws) in enumerate(self.__keywords.items())]
         kw_df = pd.DataFrame(kws_per_topic, columns=["i", "topic", "nr_kws"])
         kw_df["end_idx"] = np.cumsum(kw_df["nr_kws"])
-        kw_df["begin_idx"] = kw_df["end_idx"].shift(1).fillna(0)
+        kw_df["begin_idx"] = kw_df["end_idx"].shift(1).fillna(0).astype(int)
 
         # Select topic line
-        start = kw_df.loc[kw_df['topic'] == topic]["begin_idx"]
-        end = kw_df.loc[kw_df['topic'] == topic]["end_idx"]
+        start = kw_df.loc[kw_df['topic'] == topic]["begin_idx"].iloc[0]
+        end = kw_df.loc[kw_df['topic'] == topic]["end_idx"].iloc[0]
 
         # Slice parameter
-        q_beta_tilde_shape_topic = self.variational_parameter["a_beta_tilde_S"][int(start):int(end)]
-        q_beta_tilde_rate_topic = self.variational_parameter["b_beta_tilde_S"][int(start):int(end)]
+        q_beta_tilde_shape_topic = self.variational_parameter["a_beta_tilde_S"][start:end]
+        q_beta_tilde_rate_topic = self.variational_parameter["b_beta_tilde_S"][start:end]
 
         # Plot distribution
         topic_kws = list(self.__keywords[topic])
@@ -648,13 +656,22 @@ class SPF(tf.keras.Model):
         plt.grid(alpha=.3)
         plt.show()
 
-    def plot_word_distribution(self, word="abc", topic="abc", x_max=10):
+    def plot_word_distribution(self, word: str, topic: str, x_max: int =10):
         """
         Shows the fitted variational distribution of q(\Tilde{\beta}){topic,word} and q(\beta^*)_{topic,word}.
         :param word: Word for which the distribution should be plotted
         :param topic: Topic for the topic-word distribution
         :param x_max: Maximum x value for the plot
         """
+        # Check if topic str is valid
+        topic_names = list(self.keywords.keys())
+        rs_names = [f"residual_topic_{i + 1}" for i in range(self.residual_topics)]
+        if topic not in topic_names + rs_names:
+            raise ValueError(f"{topic} is not a valid topic name. Topic names are: {topic_names + rs_names}")
+
+        # Check if word exists in the vocabulary
+        if word not in list(self.model_settings["vocab"]):
+            raise ValueError(f"{word} not in vocabulary!")
 
         def search_idx(word="abc", topic="abc"):
             """
@@ -681,10 +698,6 @@ class SPF(tf.keras.Model):
                 return np.sum(kws_per_topic[:list(self.__keywords.keys()).index(topic)]) + word_in_topic_index
             else:
                 return word_in_topic_index
-
-        # Check if word exists in the vocabulary
-        if word not in list(self.model_settings["vocab"]):
-            raise ValueError(f"{word} not in vocabulary!")
 
         # Return q(\tilde[\beta}) parameter if the word is a seed word
         if word in list(self.__keywords[topic]):
@@ -735,5 +748,5 @@ class SPF(tf.keras.Model):
         plt.show()
 
     def __repr__(self):
-        return f"Seeded Poisson Factorization (SPF) model initialized with {len(self.keywords.keys())} keyword " \
+        return f"Seeded Poisson Factorization (seededPF) model initialized with {len(self.keywords.keys())} keyword " \
                f"topics and {self.residual_topics} residual topics."

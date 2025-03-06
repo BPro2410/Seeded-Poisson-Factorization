@@ -6,8 +6,8 @@ import tensorflow as tf
 # Set seed
 tf.random.set_seed(42)
 
-# Import SPF
-from SPF.SPF_model import SPF
+# Import seededPF
+from seededPF.SPF_model import SPF
 
 ###################
 ## Preliminaries ##
@@ -42,7 +42,7 @@ BETA_TILDE_SHAPE = 1.0
 
 
 #########
-## SPF ##
+## seededPF ##
 #########
 
 # Load data
@@ -64,7 +64,7 @@ spf1.model_train(lr = LR,
                  priors = {"beta_tilde_shape": BETA_TILDE_SHAPE})
 
 # -- Analyze model results
-categories, E_theta = spf1.calculate_topics()
+categories, E_theta = spf1.return_topics()
 
 # -- Calculate model accuracy
 df1["SPF_estimates"] = categories

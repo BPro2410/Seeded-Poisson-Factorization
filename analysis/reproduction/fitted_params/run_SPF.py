@@ -6,8 +6,8 @@ import tensorflow as tf
 # Set seed
 tf.random.set_seed(42)
 
-# Import SPF
-from SPF.SPF_model import SPF
+# Import seededPF
+from seededPF.SPF_model import SPF
 
 ###################
 ## Preliminaries ##
@@ -27,7 +27,7 @@ keywords = {"pet supplies": pets, "toys games": toys, "beauty": beauty, "baby pr
 df1 = pd.read_csv("./data/30k_amazon.csv")
 
 #########
-## SPF ##
+## seededPF ##
 #########
 
 # -- Initialize the model
@@ -41,10 +41,8 @@ spf1.read_docs(df1["Text"])
 spf1.model_train(lr = 0.1, epochs = 150, tensorboard = False, early_stopping = False, print_information=True)
 
 # -- Analyze model results
-spf1.plot_model_loss()
-categories, E_theta = spf1.calculate_topics()
+categories, E_theta = spf1.return_topics()
 betas = spf1.calculate_topic_word_distributions()
-most_relevant_words = spf1.print_topics(num_words = 15)
 spf1.model_metrics
 
 # -- Calculate model accuracy
@@ -55,9 +53,3 @@ np.sum(df1.Accuracy) / df1.shape[0]
 from sklearn.metrics import classification_report
 import pprint
 pprint.pprint(classification_report(df1.Cat1, df1.SPF_estimates))
-
-# -- Analyze keywords
-spf1.plot_seeded_topic_distribution(topic = "pet supplies", x_max = 17)
-spf1.plot_word_distribution(word = "chocolate", topic = "grocery gourmet food", x_max = 45)
-spf1.plot_word_distribution(word = "dog", topic = "pet supplies", x_max = 25)
-

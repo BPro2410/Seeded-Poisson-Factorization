@@ -4,7 +4,7 @@ Source code for the paper: [Seeded Poisson Factorization: Leveraging domain know
 
 ## Installation
 
-Configure a virtual environment using Pyhton 3.9+. Inside the virtual environment, use `pip` to install the required packages:
+Configure a virtual environment using Pyhton 3.10+. Inside the virtual environment, use `pip` to install the required packages:
 
 ```{bash}
 (venv)$ pip install -r requirements.txt
@@ -20,7 +20,7 @@ We are using customer feedback from the Amazon dataset, available [here](https:/
 
 ## Applying SPF
 
-To apply SPF see [the example notebook](https://github.com/BPro2410/Seeded-Poisson-Factorization/blob/main/SPF_example_notebook.ipynb) for a minimal example.
+To apply the SPF model, see the [example notebook](minimal_example.ipynb) for a minimal example.
 
 
 ## Reproducing Paper Results
