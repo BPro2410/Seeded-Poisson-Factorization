@@ -14,15 +14,16 @@ keywords = ["nlp", "topicmodel", "topic-modeling", "textanalysis", "text mining"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
-matplotlib = "3.7"
-numpy = "2.0"
-pandas = "2.2.3"
-scikit_learn = "1.6"
-scipy = "1.15"
-seaborn = "0.13"
+cmake = "3.31.6"
 tensorflow = "2.18"
-tensorflow_probability = "0.25"
 tf-keras = "2.18"
+tensorflow_probability = "0.25"
+matplotlib = "*"
+numpy = ">=1.23,<2.0"
+pandas = "*"
+scikit_learn = "1.6.1"
+scipy = "1.15.2"
+seaborn = "0.13.2"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.11.2"

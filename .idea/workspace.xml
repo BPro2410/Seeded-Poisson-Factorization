@@ -5,16 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="43302585-51de-4aad-8e43-d88694e165cb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/release.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/release.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/seededpf/spf_graphical.PNG" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/examples/SPF_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/examples/SPF_example.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/reproduction/fitted_params/run_SPF.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/reproduction/fitted_params/run_SPF.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/reproduction/robustness/SPF_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/reproduction/robustness/SPF_example.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pypi.md" beforeDir="false" afterPath="$PROJECT_DIR$/pypi.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/seededPF/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/seededPF/SPF_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/SPF_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/seededPF/SPF_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/SPF_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/seededPF/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/__init__.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +23,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -44,7 +39,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Bernd/Documents/01_Coding/02_GitHub/Seeded-Poisson-Factorization&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Bernd/Documents/01_Coding/02_GitHub/example_workflow&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -55,6 +50,9 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization\seededpf" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization" />
       <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization\SPF\old" />
@@ -93,7 +91,8 @@
       <workItem from="1741262628408" duration="806000" />
       <workItem from="1741263448906" duration="4039000" />
       <workItem from="1741269277283" duration="1750000" />
-      <workItem from="1741271063602" duration="1164000" />
+      <workItem from="1741271063602" duration="5023000" />
+      <workItem from="1741279233203" duration="2547000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1708519408645</created>
@@ -179,7 +178,14 @@
       <option name="project" value="LOCAL" />
       <updated>1741271020081</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="prepare for release 0.0.1">
+      <created>1741272248169</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1741272248169</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -205,6 +211,11 @@
           <url>file://$PROJECT_DIR$/seededpf/SPF_model.py</url>
           <line>2</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
+          <url>notebook://C:/Users/Bernd/Documents/01_Coding/02_GitHub/Seeded-Poisson-Factorization/analysis/examples/SPF_example_notebook.ipynb</url>
+          <line>6</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
