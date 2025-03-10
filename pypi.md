@@ -138,7 +138,7 @@ The `seededPF` package offers several methods, including:
 
 # Contribution
 
-If you encounter any bugs or would like to suggest new features for the library, please feel free to contact us or create an issue.
+If you encounter any bugs or would like to suggest new features for the library, please feel free to contact us or create an [issue](https://github.com/BPro2410/Seeded-Poisson-Factorization/issues).
 
 # Citing
 
