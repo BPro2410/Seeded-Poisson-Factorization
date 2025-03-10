@@ -41,7 +41,8 @@ spf1.read_docs(df1["Text"])
 spf1.model_train(lr = 0.1, epochs = 150, tensorboard = False, early_stopping = False, print_information=True)
 
 # -- Analyze model results
-spf1.plot_model_loss()
+loss_fig, loss_ax = spf1.plot_model_loss(save_path = None)
+loss_fig.show()
 categories, E_theta = spf1.return_topics()
 betas = spf1.calculate_topic_word_distributions()
 most_relevant_words = spf1.print_topics(num_words = 15)
@@ -57,8 +58,7 @@ import pprint
 pprint.pprint(classification_report(df1.Cat1, df1.SPF_estimates))
 
 # -- Analyze keywords
-spf1.plot_seeded_topic_distribution(topic = "pet supplies", x_max = 17)
-spf1.plot_word_distribution(word = "chocolate", topic = "grocery gourmet food", x_max = 45)
-spf1.plot_word_distribution(word = "dog", topic = "pet supplies", x_max = 25)
-
+p1, a1 = spf1.plot_seeded_topic_distribution(topic = "pet supplies", x_max = 17)
+p2, a2 = spf1.plot_word_distribution(word = "chocolate", topic = "grocery gourmet food", x_max = 45)
+p3, a3 = spf1.plot_word_distribution(word = "dog", topic = "pet supplies", x_max = 25)
 

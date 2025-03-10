@@ -12,6 +12,7 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 from sklearn.feature_extraction.text import CountVectorizer
 from seededpf.SPF_helper import SPF_helper
+from typing import List, Optional, Tuple
 
 # Shortcuts
 # np.set_printoptions(suppress=True)
@@ -526,10 +527,12 @@ class SPF(tf.keras.Model):
         topics = [recode_cats(i) for i in categories]
         return topics, E_theta
 
-    def plot_model_loss(self):
+    def plot_model_loss(self,
+                        save_path: Optional[str] = None) -> Tuple[plt.Figure, plt.Axes]:
         """
         Plots the model loss to check convergence.
-        :return: None
+        :param save_path: Path to save the plot as an image. If None, the plot is not saved. Defaults to None.
+        :return: Tuple[plt.Figure, plt.Axes]: The created matplotlib figure and axes objects
         """
 
         fig, ax1 = plt.subplots(figsize=(12, 7))
@@ -548,7 +551,11 @@ class SPF(tf.keras.Model):
             ax1.spines[axis].set_color("0.2")
         ax1.tick_params(width=2.5, labelsize=13)
         fig.tight_layout()
-        plt.show()
+
+        if save_path:
+            plt.savefig(save_path)
+
+        return fig, ax1
 
 
     def calculate_topic_word_distributions(self):
@@ -598,13 +605,16 @@ class SPF(tf.keras.Model):
 
     def plot_seeded_topic_distribution(self, topic: str,
                                        x_max: int = 10,
-                                       detail: bool =False):
+                                       detail: bool =False,
+                                       save_path: Optional[str] = None) -> Tuple[plt.Figure, plt.Axes]:
         """
         Plots the variational topic word distribution of all seed words belonging to the topic parameter.
 
         :param topic: Topic name whose variational seeded topic-word distribution should be plotted.
         :param x_max: Maximal value of the x axis
         :param detail: Whether the parameter of the variational gamma distributions should be printed in the legend.
+        :param save_path: Path to save the plot as an image. If None, the plot is not saved. Defaults to None.
+        :return: Tuple[plt.Figure, plt.Axes]: The created matplotlib figure and axes objects
         """
         topic_names = list(self.keywords.keys())
         rs_names = [f"residual_topic_{i + 1}" for i in range(self.residual_topics)]
@@ -654,15 +664,27 @@ class SPF(tf.keras.Model):
         plt.legend(loc=1, frameon=False, labelcolor="0.2",
                    prop={"weight": "bold", "size": 13})
         plt.grid(alpha=.3)
-        plt.show()
 
-    def plot_word_distribution(self, word: str, topic: str, x_max: int =10):
+        if save_path:
+            plt.savefig(save_path)
+
+        return fig, ax
+
+
+    def plot_word_distribution(self,
+                               word: str,
+                               topic: str,
+                               x_max: int =10,
+                               save_path: Optional[str] = None) -> Tuple[plt.Figure, plt.Axes]:
         """
         Shows the fitted variational distribution of q(\Tilde{\beta}){topic,word} and q(\beta^*)_{topic,word}.
         :param word: Word for which the distribution should be plotted
         :param topic: Topic for the topic-word distribution
         :param x_max: Maximum x value for the plot
+        :param save_path: Path to save the plot as an image. If None, the plot is not saved. Defaults to None.
+        :return: Tuple[plt.Figure, plt.Axes]: The created matplotlib figure and axes objects
         """
+
         # Check if topic str is valid
         topic_names = list(self.keywords.keys())
         rs_names = [f"residual_topic_{i + 1}" for i in range(self.residual_topics)]
@@ -745,7 +767,11 @@ class SPF(tf.keras.Model):
         plt.legend(loc=1, frameon=False, labelcolor="0.2",
                    prop={"weight": "bold", "size": 13})
         plt.grid(alpha=.3)
-        plt.show()
+
+        if save_path:
+            plt.savefig(save_path)
+
+        return fig, ax
 
     def __repr__(self):
         return f"Seeded Poisson Factorization (seededpf) model initialized with {len(self.keywords.keys())} keyword " \

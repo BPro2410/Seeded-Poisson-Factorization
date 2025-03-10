@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="43302585-51de-4aad-8e43-d88694e165cb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/pypi.md" beforeDir="false" afterPath="$PROJECT_DIR$/pypi.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/examples/SPF_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/examples/SPF_example.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/examples/SPF_example_notebook.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/examples/SPF_example_notebook.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seededpf/SPF_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/SPF_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +95,11 @@
       <workItem from="1741269277283" duration="1750000" />
       <workItem from="1741271063602" duration="5023000" />
       <workItem from="1741279233203" duration="4379000" />
-      <workItem from="1741605194789" duration="199000" />
+      <workItem from="1741605194789" duration="235000" />
+      <workItem from="1741608108841" duration="7000" />
+      <workItem from="1741619479542" duration="442000" />
+      <workItem from="1741619935338" duration="367000" />
+      <workItem from="1741620318806" duration="895000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1708519408645</created>
@@ -204,7 +213,14 @@
       <option name="project" value="LOCAL" />
       <updated>1741286274266</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="update pypi.md">
+      <created>1741605426119</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1741605426119</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -223,7 +239,8 @@
     <MESSAGE value="prepare for release 0.0.1" />
     <MESSAGE value="prepare for release v0.0.1" />
     <MESSAGE value="update documentation" />
-    <option name="LAST_COMMIT_MESSAGE" value="update documentation" />
+    <MESSAGE value="update pypi.md" />
+    <option name="LAST_COMMIT_MESSAGE" value="update pypi.md" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -232,11 +249,6 @@
           <url>file://$PROJECT_DIR$/seededpf/SPF_model.py</url>
           <line>2</line>
           <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
-          <url>notebook://C:/Users/Bernd/Documents/01_Coding/02_GitHub/Seeded-Poisson-Factorization/analysis/examples/SPF_example_notebook.ipynb</url>
-          <line>6</line>
-          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
