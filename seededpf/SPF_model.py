@@ -752,7 +752,7 @@ class SPF(tf.keras.Model):
         for shape, rate, betas in moments:
             # ax.fill(x, stats.gamma.pdf(x, a = shape, scale = 1/rate), alpha = .5)
             ax.plot(x, stats.gamma.pdf(x, a=shape, scale=1 / rate), alpha=.7,
-                    label=r"$q({})_({},{})$ = Gamma({:.2f}, {:.2f})".format(
+                    label=r"$q({})({},{})$ = Gamma({:.2f}, {:.2f})".format(
                         betas, topic, word, shape, rate))
 
         ax = plt.gca()

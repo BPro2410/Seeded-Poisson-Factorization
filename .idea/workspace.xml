@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="43302585-51de-4aad-8e43-d88694e165cb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/examples/SPF_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/examples/SPF_example.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/examples/SPF_example_notebook.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/examples/SPF_example_notebook.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/seededpf/SPF_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/SPF_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -99,7 +95,8 @@
       <workItem from="1741608108841" duration="7000" />
       <workItem from="1741619479542" duration="442000" />
       <workItem from="1741619935338" duration="367000" />
-      <workItem from="1741620318806" duration="895000" />
+      <workItem from="1741620318806" duration="1030000" />
+      <workItem from="1741621704051" duration="230000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1708519408645</created>
@@ -220,7 +217,14 @@
       <option name="project" value="LOCAL" />
       <updated>1741605426119</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="release v0.1.0">
+      <created>1741621517655</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1741621517655</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -240,7 +244,8 @@
     <MESSAGE value="prepare for release v0.0.1" />
     <MESSAGE value="update documentation" />
     <MESSAGE value="update pypi.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="update pypi.md" />
+    <MESSAGE value="release v0.1.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="release v0.1.0" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
