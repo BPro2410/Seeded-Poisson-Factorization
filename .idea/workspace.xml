@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="43302585-51de-4aad-8e43-d88694e165cb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pypi.md" beforeDir="false" afterPath="$PROJECT_DIR$/pypi.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +90,7 @@
       <workItem from="1741263448906" duration="4039000" />
       <workItem from="1741269277283" duration="1750000" />
       <workItem from="1741271063602" duration="5023000" />
-      <workItem from="1741279233203" duration="2925000" />
+      <workItem from="1741279233203" duration="4379000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1708519408645</created>
@@ -189,7 +190,21 @@
       <option name="project" value="LOCAL" />
       <updated>1741286058128</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="update documentation">
+      <created>1741286268067</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1741286268067</updated>
+    </task>
+    <task id="LOCAL-00016" summary="update documentation">
+      <created>1741286274266</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1741286274266</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -207,7 +222,8 @@
     <MESSAGE value="prepare for release" />
     <MESSAGE value="prepare for release 0.0.1" />
     <MESSAGE value="prepare for release v0.0.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="prepare for release v0.0.1" />
+    <MESSAGE value="update documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="update documentation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

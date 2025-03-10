@@ -17,10 +17,9 @@
 
 <p>
     <div align="center">
-        <img src="./seededpf/spf_graphical.PNG" width="50%" alt/>
+        <img src="https://raw.githubusercontent.com/BPro2410/Seeded-Poisson-Factorization/refs/heads/main/seededpf/spf_graphical.PNG" width="50%" alt/>
     </div>
 </p>
-
 
 Traditional unsupervised topic models often struggle to align with predefined conceptual domains and typically require significant post-processing efforts, such as topic merging or manual labeling, to ensure topic coherence. `seededPF` overcomes this limitation by enabling the pre-specification of topics, which leads to improved topic interpretability and reduces the need for manual post-processing. Additionally, it supports the estimation of unsupervised topics when no seed words are provided.
 
