@@ -13,7 +13,7 @@
 </div>
 
 ## What is seededPF
-`seededPF` is an easy to use implementation of the Seeded Poisson Factorization (SPF) topic model, shown in [this research paper](https://arxiv.org/abs/2503.02741). SPF is a guided topic modeling approach that allows users to pre-specify topics of interest by providing sets of seed words. Built on Poisson factorization, it leverages variational inference techniques for efficient and scalable computation. 
+`seededPF` is an easy to use implementation of the Seeded Poisson Factorization (SPF) topic model, introduced in [this research paper](https://arxiv.org/abs/2503.02741). SPF provides a guided topic modeling approach that allows users to pre-specify topics of interest by providing sets of seed words. Built on Poisson factorization, it leverages variational inference techniques for efficient and scalable estimation. 
 
 <p>
     <div align="center">
@@ -29,7 +29,7 @@ Consider using `seededPF`  if:
 - You wish to estimate a topic model that is partially or fully unsupervised (i.e., providing no seed words means fitting a standard Poisson factorization topic model without predefined topics).
 - You require a fast and scalable topic modeling solution.
 
-`seededPF` offers a high-performance, scalable interface for topic modeling, providing a reliable alternative to [keyATM](https://keyatm.github.io/keyATM/index.html) and [SeededLDA](https://github.com/koheiw/seededlda), while minimizing the need for manual intervention and enhancing topic interpretability.
+`seededPF` offers a high-performance, scalable interface for guided topic modeling, providing a reliable alternative to [keyATM](https://keyatm.github.io/keyATM/index.html) and [SeededLDA](https://github.com/koheiw/seededlda), while minimizing the need for manual intervention and enhancing topic interpretability.
 
 
 ## Installation
@@ -56,7 +56,7 @@ One can also install the package from [GitHub](https://github.com/BPro2410/Seede
 ```
 
 
-# Training the Seeded Poisson Factorization topic model
+# Training the Seeded Poisson Factorization model
 
 `seededPF` is an easy to use library for topic modeling. We quickly walk through the most essential steps below:
 1. Imports and data preparation
@@ -71,7 +71,7 @@ The following minimal example is available on [GitHub](https://github.com/BPro24
 
 Once installed, one can import the `SPF` class of the `seededPF` library and is ready to go. There are only 2 things required to fit the SPF topic model:
 1. Text documents
-2. A seed word (i.e. keyword) dictionary for each topic to be estimated.
+2. A seed word (i.e., keyword) dictionary for each topic to be estimated.
 
 ```python
 # Imports
