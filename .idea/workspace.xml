@@ -4,8 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="43302585-51de-4aad-8e43-d88694e165cb" name="Changes" comment="">
+    <list default="true" id="43302585-51de-4aad-8e43-d88694e165cb" name="Changes" comment="release v0.1.0">
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/experiments/Newsgroups/20NG_PF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/experiments/Newsgroups/20NG_SPF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/experiments/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/experiments/banking/banking_PF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/experiments/banking/banking_SPF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/experiments/dbpedia/dbpedia_PF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/experiments/dbpedia/dbpedia_SPF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/experiments/legal/legal_PF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/experiments/legal/legal_SPF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/model_comparison/PF/pf_amazon.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analysis/reproduction/model_comparison/calculate_coherence_diversity.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/seededpf/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Seeded-Poisson-Factorization.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Seeded-Poisson-Factorization.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/examples/SPF_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/examples/SPF_example.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/model_comparison/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/reproduction/model_comparison/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/reproduction/robustness/SPF_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/reproduction/robustness/SPF_robustness.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/seededpf/SPF_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/seededpf/SPF_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -37,7 +53,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Bernd/Documents/01_Coding/02_GitHub/example_workflow&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Bernd/Documents/01_Coding/02_GitHub/Seeded-Poisson-Factorization&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -52,6 +68,8 @@
       <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization\seededpf" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization\analysis\reproduction\experiments\Newsgroups" />
+      <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization\analysis\reproduction\experiments\imdb" />
       <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization" />
       <recent name="C:\Users\Bernd\Documents\01_Coding\02_GitHub\Seeded-Poisson-Factorization\SPF\old" />
     </key>
@@ -97,6 +115,33 @@
       <workItem from="1741619935338" duration="367000" />
       <workItem from="1741620318806" duration="1030000" />
       <workItem from="1741621704051" duration="230000" />
+      <workItem from="1741621948958" duration="729000" />
+      <workItem from="1741730887543" duration="18000" />
+      <workItem from="1744648258408" duration="16024000" />
+      <workItem from="1744710439745" duration="748000" />
+      <workItem from="1744711200052" duration="3779000" />
+      <workItem from="1744832943595" duration="13081000" />
+      <workItem from="1744895920010" duration="289000" />
+      <workItem from="1745498429408" duration="6232000" />
+      <workItem from="1745504739128" duration="227000" />
+      <workItem from="1745504974708" duration="962000" />
+      <workItem from="1745520907061" duration="3501000" />
+      <workItem from="1745574759866" duration="5649000" />
+      <workItem from="1745780052769" duration="1252000" />
+      <workItem from="1746190713498" duration="3511000" />
+      <workItem from="1747317510746" duration="1471000" />
+      <workItem from="1748436164020" duration="9000" />
+      <workItem from="1748436180229" duration="6325000" />
+      <workItem from="1748519713934" duration="10863000" />
+      <workItem from="1748600163332" duration="3579000" />
+      <workItem from="1748963416032" duration="295000" />
+      <workItem from="1748964392958" duration="749000" />
+      <workItem from="1749125751568" duration="124000" />
+      <workItem from="1749144460319" duration="1185000" />
+      <workItem from="1749239363814" duration="1466000" />
+      <workItem from="1749242644714" duration="12000" />
+      <workItem from="1749566589198" duration="597000" />
+      <workItem from="1749905944725" duration="1469000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1708519408645</created>
@@ -224,7 +269,14 @@
       <option name="project" value="LOCAL" />
       <updated>1741621517655</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="release v0.1.0">
+      <created>1741622083834</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1741622083834</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -247,18 +299,8 @@
     <MESSAGE value="release v0.1.0" />
     <option name="LAST_COMMIT_MESSAGE" value="release v0.1.0" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/seededpf/SPF_model.py</url>
-          <line>2</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Seeded_Poisson_Factorization$SPF_example.coverage" NAME="SPF_example Coverage Results" MODIFIED="1738681750903" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Seeded_Poisson_Factorization$spf2.coverage" NAME="spf2 Coverage Results" MODIFIED="1744836045474" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/analysis/reproduction/experiments/medical" />
   </component>
 </project>

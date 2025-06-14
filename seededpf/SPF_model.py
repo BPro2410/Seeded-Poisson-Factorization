@@ -523,8 +523,10 @@ class SPF(tf.keras.Model):
                 return list(self.keywords.keys())[i]
             else:
                 return "No_keyword_topic_" + str(i - np.max(range(len(self.keywords))))
-
-        topics = [recode_cats(i) for i in categories]
+        if self.num_kw > 0:
+            topics = [recode_cats(i) for i in categories]
+        else:
+            topics = categories
         return topics, E_theta
 
     def plot_model_loss(self,

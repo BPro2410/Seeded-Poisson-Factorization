@@ -2,7 +2,6 @@
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-
 # Set seed
 tf.random.set_seed(42)
 
