@@ -13,7 +13,7 @@
 </div>
 
 ## What is seededPF
-`seededPF` is an easy to use implementation of the Seeded Poisson Factorization (SPF) topic model, introduced in [this research paper](https://arxiv.org/abs/2503.02741). SPF provides a guided topic modeling approach that allows users to pre-specify topics of interest by providing sets of seed words. Built on Poisson factorization, it leverages variational inference techniques for efficient and scalable estimation. 
+`seededPF` is an easy to use implementation of the Seeded Poisson Factorization (SPF) topic model, introduced in [this research paper](https://www.sciencedirect.com/science/article/pii/S095070512501161X). SPF provides a guided topic modeling approach that allows users to pre-specify topics of interest by providing sets of seed words. Built on Poisson factorization, it leverages variational inference techniques for efficient and scalable estimation. 
 
 <p>
     <div align="center">
@@ -21,7 +21,7 @@
     </div>
 </p>
 
-Traditional unsupervised topic models often struggle to align with predefined conceptual domains and typically require significant post-processing efforts, such as topic merging or manual labeling, to ensure topic coherence. `seededPF` overcomes this limitation by enabling the pre-specification of topics, which leads to improved topic interpretability and reduces the need for manual post-processing. Additionally, it supports the estimation of unsupervised topics when no seed words are provided.
+Traditional unsupervised topic models (like LDA) often struggle to align with predefined conceptual domains and typically require significant post-processing efforts, such as topic merging or manual labeling, to ensure topic coherence. `seededPF` overcomes this limitation by enabling the pre-specification of topics, which leads to improved topic interpretability and reduces the need for manual post-processing. Additionally, it supports the estimation of unsupervised topics when no seed words are provided.
 
 Consider using `seededPF`  if:
 - You need to fit a topic model with a specific topic schema.
@@ -145,14 +145,18 @@ If you encounter any bugs or would like to suggest new features for the library,
 When citing `seededPF`, please use this BibTeX entry:
 
 ```
-@misc{prostmaier2025seededpoissonfactorizationleveraging,
-      title={Seeded Poisson Factorization: Leveraging domain knowledge to fit topic models}, 
-      author={Bernd Prostmaier and Jan Vávra and Bettina Grün and Paul Hofmarcher},
-      year={2025},
-      eprint={2503.02741},
-      archivePrefix={arXiv},
-      primaryClass={stat.ME},
-      url={https://arxiv.org/abs/2503.02741}, 
+@article{PROSTMAIER2025114116,
+    title = {Seeded Poisson Factorization: leveraging domain knowledge to fit topic models},
+    journal = {Knowledge-Based Systems},
+    volume = {327},
+    pages = {114116},
+    year = {2025},
+    issn = {0950-7051},
+    doi = {https://doi.org/10.1016/j.knosys.2025.114116},
+    url = {https://www.sciencedirect.com/science/article/pii/S095070512501161X},
+    author = {Bernd Prostmaier and Jan Vávra and Bettina Grün and Paul Hofmarcher},
+    keywords = {Poisson factorization, Topic model, Variational inference, Customer feedback},
+    abstract = {Topic models are widely used for discovering latent thematic structures in large text corpora, yet traditional unsupervised methods often struggle to align with pre-defined conceptual domains. This paper introduces seeded Poisson factorization (SPF), a novel approach that extends the Poisson factorization (PF) framework by incorporating domain knowledge through seed words. SPF enables a structured topic discovery by modifying the prior distribution of topic-specific term intensities, assigning higher initial rates to pre-defined seed words. The model is estimated using variational inference with stochastic gradient optimization, ensuring scalability to large datasets. We present in detail the results of applying SPF to an Amazon customer feedback dataset, leveraging pre-defined product categories as guiding structures. SPF achieves superior performance compared to alternative guided probabilistic topic models in terms of computational efficiency and classification performance. Robustness checks highlight SPF’s ability to adaptively balance domain knowledge and data-driven topic discovery, even in case of imperfect seed word selection. Further applications of SPF to four additional benchmark datasets, where the corpus varies in size and the number of topics differs, demonstrate its general superior classification performance compared to the unseeded PF model.}
 }
 ```
 
