@@ -2,6 +2,11 @@
 
 Source code for the paper: [Seeded Poisson Factorization: leveraging domain knowledge to fit topic models](https://www.sciencedirect.com/science/article/pii/S095070512501161X).
 
+> **⚠️ Note:** We encourage users to checkout the actively maintained [poisson-topicmodels](https://github.com/BPro2410/poisson_topicmodels) package for easier use of SPF.
+> It includes SPF along with other topic models in an unified framework, 
+> with comprehensive documentation [[here]](https://poisson-topicmodels.readthedocs.io/en/latest/) and ongoing development [[PyPI]](https://pypi.org/project/poisson-topicmodels/).
+> You can find a minimal real world example of SPF within **poisson-topicmodels** [here](https://github.com/BPro2410/poisson_topicmodels/blob/main/examples/run_topicmodels.ipynb).
+
 This repo contains an easy to use implementation of the Seeded Poisson Factorization (SPF) topic model. SPF is a guided topic modeling approach that allows users to pre-specify topics of interest by providing sets of seed words. Built on Poisson factorization, it leverages variational inference techniques for efficient and scalable computation. 
 
 <p>
